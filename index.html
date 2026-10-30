@@ -23,7 +23,8 @@ button::after {
 .page {
     box-sizing: border-box;
     min-height: 100vh;
-    padding: 16px 14px 40px;
+    /* 底部留出 tab 栏高度（含 iPhone 安全区），避免内容被遮住 */
+    padding: 16px 14px 96px;
 }
 
 /* ---------- 头部 ---------- */
@@ -678,6 +679,187 @@ img { max-width: 100%; }
     pointer-events: none;
 }
 .toast.show { opacity: 1; }
+/* ---------- 底部 tab ---------- */
+.tabbar {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    z-index: 90;
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 420px;
+    transform: translateX(-50%);
+    border-top: 1px solid #e4ebda;
+    background: rgba(255, 255, 255, 0.97);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tab-item {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    padding: 7px 0 6px;
+    color: #9aa78c;
+    font-size: 11px;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+    transition: color 0.15s;
+}
+
+.tab-item.is-active {
+    color: #4b7a2a;
+}
+
+.tab-item.is-active .tab-label {
+    font-weight: 600;
+}
+
+.tab-icon {
+    display: block;
+    width: 21px;
+    height: 21px;
+    margin-bottom: 2px;
+}
+
+/* ---------- 针灸页 ---------- */
+.acu-bar {
+    display: flex;
+    box-sizing: border-box;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 8px 10px;
+    border: 1px solid #dfe8d4;
+    border-radius: 13px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(96, 120, 72, 0.06);
+}
+
+.acu-nav {
+    width: 36px;
+    height: 36px;
+    flex: none;
+    border-radius: 10px;
+    background: #f2f7ea;
+    color: #5f7a48;
+    font-size: 20px;
+    line-height: 1;
+    text-align: center;
+}
+
+.acu-nav:active {
+    background: #e4eeda;
+}
+
+/* 翻到别的日子时才出现，避免一直向前翻回不去 */
+.acu-reset {
+    display: block;
+    width: fit-content;
+    margin: -4px auto 10px;
+    padding: 3px 12px;
+    border: 1px solid #c6dcae;
+    border-radius: 499px;
+    background: #eef5e4;
+    color: #4b7a2a;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.acu-reset:active {
+    background: #e2eed4;
+}
+
+.acu-bar-main {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.acu-date {
+    color: #3d5528;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.acu-gz {
+    margin-top: 2px;
+    color: #7c8a6e;
+    font-size: 12px;
+    letter-spacing: 1px;
+}
+
+.acu-point {
+    margin-bottom: 9px;
+    padding: 11px 12px;
+    border-radius: 9px;
+    background: #f8faf5;
+}
+
+.acu-point:last-child {
+    margin-bottom: 0;
+}
+
+.acu-point-head {
+    display: flex;
+    align-items: center;
+}
+
+.acu-limb {
+    display: flex;
+    width: 20px;
+    height: 20px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: #e4eeda;
+    color: #5f7a48;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.acu-name {
+    margin-left: 8px;
+    color: #2f3d26;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+
+.acu-side {
+    margin-left: auto;
+    padding: 2px 9px;
+    border: 1px solid #c6dcae;
+    border-radius: 499px;
+    background: #eef5e4;
+    color: #3e5a2a;
+    font-size: 11px;
+}
+
+.acu-meridian {
+    display: block;
+    margin-top: 6px;
+    color: #5c6852;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+/* 灸穴用暖色，与针区分 */
+.acu-point-moxa {
+    border: 1px solid #f0e3c8;
+    background: #fdf7ec;
+}
+
+.acu-limb-moxa {
+    background: #f6e7cb;
+    color: #8a6a2f;
+}
+
 .modal-open { overflow: hidden; }
 :focus-visible { outline: 2px solid #7c9a58; outline-offset: 2px; }
 
@@ -692,6 +874,9 @@ img { max-width: 100%; }
             <span class="hero-subtitle-line">以书入医，以友辅仁，欢迎加入！</span>
         </div>
     </div>
+
+    <!-- 第一页：舌象 -->
+    <div class="tab-pane" id="paneTongue">
 
     <!-- 选图 / 原图 -->
     <div class="card" id="dropCard">
@@ -743,7 +928,86 @@ img { max-width: 100%; }
     <div class="disclaimer">
         <span>以上建议由 AI 根据图片生成，仅供日常养生参考，不替代专业医疗诊断，也不构成处方。汤药部分尤其需要中医师面诊后确定，请勿自行照方抓药服用。身体不适请及时就医。</span>
     </div>
+
+    </div><!-- /paneTongue -->
+
+    <!-- 第二页：针灸（按当日干支取穴） -->
+    <div class="tab-pane hidden" id="paneAcu">
+
+        <div class="acu-bar">
+            <button class="acu-nav" id="acuPrev" type="button" aria-label="前一天">‹</button>
+            <div class="acu-bar-main">
+                <span class="acu-date" id="acuDate">—</span>
+                <span class="acu-gz" id="acuGz">—</span>
+            </div>
+            <button class="acu-nav" id="acuNext" type="button" aria-label="后一天">›</button>
+        </div>
+        <span class="acu-reset hidden" id="acuReset" role="button" tabindex="0">回到今天</span>
+
+        <!-- 针：手一穴、足一穴，左右分侧 -->
+        <div class="card">
+            <div class="card-head">
+                <span class="card-title">今日针灸</span>
+            </div>
+
+            <div class="acu-point">
+                <div class="acu-point-head">
+                    <span class="acu-limb">手</span>
+                    <span class="acu-name" id="acuHandName">—</span>
+                    <span class="acu-side" id="acuHandSide">—</span>
+                </div>
+                <span class="acu-meridian" id="acuHandMeridian">—</span>
+            </div>
+
+            <div class="acu-point">
+                <div class="acu-point-head">
+                    <span class="acu-limb">足</span>
+                    <span class="acu-name" id="acuFootName">—</span>
+                    <span class="acu-side" id="acuFootSide">—</span>
+                </div>
+                <span class="acu-meridian" id="acuFootMeridian">—</span>
+            </div>
+        </div>
+
+        <!-- 灸：按地支取一穴 -->
+        <div class="card">
+            <div class="card-head">
+                <span class="card-title">今日艾灸</span>
+                <span class="card-hint" id="acuMoxaHint">任脉</span>
+            </div>
+            <div class="acu-point acu-point-moxa">
+                <div class="acu-point-head">
+                    <span class="acu-limb acu-limb-moxa">灸</span>
+                    <span class="acu-name" id="acuMoxaName">—</span>
+                </div>
+                <span class="acu-meridian" id="acuMoxaLocation">—</span>
+            </div>
+        </div>
+
+        <div class="disclaimer">
+            <span>本页穴位依传统择时取穴法（子午流注类）按日干支推算，仅供学习与日常养生参考，不构成医疗方案。针刺属医疗操作，须由执业医师施行，请勿自行下针；艾灸注意保持距离、及时排烟，避免烫伤，孕妇、皮肤破损及发热时慎用。干支以当地 0 点为界切换，与黄历「日」一致。</span>
+        </div>
+
+    </div><!-- /paneAcu -->
 </div>
+
+<!-- 底部 tab -->
+<nav class="tabbar" role="tablist" aria-label="功能切换">
+    <button class="tab-item is-active" id="tabTongue" type="button" role="tab" aria-selected="true" aria-controls="paneTongue">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6.5 5.2v7a5.5 5.5 0 0 0 11 0v-7"></path>
+            <path d="M12 8.2v6.6"></path>
+        </svg>
+        <span class="tab-label">舌象</span>
+    </button>
+    <button class="tab-item" id="tabAcu" type="button" role="tab" aria-selected="false" aria-controls="paneAcu">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4.8 19.4 15.1 9.1"></path>
+            <circle cx="17.3" cy="6.9" r="2.3"></circle>
+        </svg>
+        <span class="tab-label">针灸</span>
+    </button>
+</nav>
 
 <!-- 读书会二维码弹层：长按图片可识别 -->
 <div class="qr-mask hidden" id="qrMask">
@@ -1615,8 +1879,196 @@ img { max-width: 100%; }
         });
     }
 
+    // ---------------- 针灸：按当日干支取穴 ----------------
+    // 日干支以 1949-10-01（甲子日）为锚点推算：(JDN + 49) % 60 即六十甲子序号。
+    // 已与黄历核对：2026-10-30 为 丁丑日。
+    var GAN = '甲乙丙丁戊己庚辛壬癸';
+    var ZHI = '子丑寅卯辰巳午未申酉戌亥';
+    var WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+
+    // 干支 | 手经 | 手穴 | 手侧 | 足经 | 足穴 | 足侧
+    var ACU_ROWS = [
+        ['甲子', '手少阴心经', '灵道', '左', '足阳明胃经', '丰隆', '右'],
+        ['乙丑', '手太阴肺经', '太渊', '右', '足太阳膀胱经', '委中', '左'],
+        ['丙寅', '手少阳三焦经', '阳池', '右', '足厥阴肝经', '蠡沟', '左'],
+        ['丁卯', '手阳明大肠经', '合谷', '左', '足少阴肾经', '阴谷', '右'],
+        ['戊辰', '手太阳小肠经', '支正', '右', '足太阴脾经', '太白', '左'],
+        ['己巳', '手厥阴心包经', '劳宫', '右', '足少阳胆经', '光明', '左'],
+        ['庚午', '手少阴心经', '少海', '右', '足阳明胃经', '内庭', '左'],
+        ['辛未', '手太阴肺经', '经渠', '左', '足太阳膀胱经', '飞扬', '右'],
+        ['壬申', '手少阳三焦经', '支沟', '左', '足厥阴肝经', '行间', '右'],
+        ['癸酉', '手阳明大肠经', '三间', '右', '足少阴肾经', '照海', '左'],
+        ['甲戌', '手太阳小肠经', '后溪', '左', '足太阴脾经', '血海', '右'],
+        ['乙亥', '手厥阴心包经', '大陵', '左', '足少阳胆经', '阳陵泉', '右'],
+        ['丙子', '手少阴心经', '通里', '左', '足阳明胃经', '上巨虚', '右'],
+        ['丁丑', '手太阴肺经', '尺泽', '右', '足太阳膀胱经', '京骨', '左'],
+        ['戊寅', '手少阳三焦经', '外关', '右', '足厥阴肝经', '太冲', '左'],
+        ['己卯', '手阳明大肠经', '阳溪', '左', '足少阴肾经', '然谷', '右'],
+        ['庚辰', '手太阳小肠经', '腕骨', '右', '足太阴脾经', '阴陵泉', '左'],
+        ['辛巳', '手厥阴心包经', '间使', '右', '足少阳胆经', '足临泣', '左'],
+        ['壬午', '手少阴心经', '少府', '右', '足阳明胃经', '解溪', '左'],
+        ['癸未', '手太阴肺经', '列缺', '左', '足太阳膀胱经', '申脉', '右'],
+        ['甲申', '手少阳三焦经', '中渚', '左', '足厥阴肝经', '中封', '右'],
+        ['乙酉', '手阳明大肠经', '曲池', '右', '足少阴肾经', '太溪', '左'],
+        ['丙戌', '手太阳小肠经', '养老', '左', '足太阴脾经', '公孙', '右'],
+        ['丁亥', '手厥阴心包经', '曲泽', '左', '足少阳胆经', '悬钟', '右'],
+        ['戊子', '手少阴心经', '神门', '左', '足阳明胃经', '足三里', '右'],
+        ['己丑', '手太阴肺经', '鱼际', '右', '足太阳膀胱经', '昆仑', '左'],
+        ['庚寅', '手少阳三焦经', '液门', '右', '足厥阴肝经', '曲泉', '左'],
+        ['辛卯', '手阳明大肠经', '手三里', '左', '足少阴肾经', '复溜', '右'],
+        ['壬辰', '手太阳小肠经', '阳谷', '右', '足太阴脾经', '三阴交', '左'],
+        ['癸巳', '手厥阴心包经', '内关', '右', '足少阳胆经', '丘墟', '左'],
+        ['甲午', '手少阴心经', '灵道', '右', '足阳明胃经', '丰隆', '左'],
+        ['乙未', '手太阴肺经', '太渊', '左', '足太阳膀胱经', '委中', '右'],
+        ['丙申', '手少阳三焦经', '阳池', '左', '足厥阴肝经', '蠡沟', '右'],
+        ['丁酉', '手阳明大肠经', '合谷', '右', '足少阴肾经', '阴谷', '左'],
+        ['戊戌', '手太阳小肠经', '支正', '左', '足太阴脾经', '太白', '右'],
+        ['己亥', '手厥阴心包经', '劳宫', '左', '足少阳胆经', '光明', '右'],
+        ['庚子', '手少阴心经', '少海', '左', '足阳明胃经', '内庭', '右'],
+        ['辛丑', '手太阴肺经', '经渠', '右', '足太阳膀胱经', '飞扬', '左'],
+        ['壬寅', '手少阳三焦经', '支沟', '右', '足厥阴肝经', '行间', '左'],
+        ['癸卯', '手阳明大肠经', '三间', '左', '足少阴肾经', '照海', '右'],
+        ['甲辰', '手太阳小肠经', '后溪', '右', '足太阴脾经', '血海', '左'],
+        ['乙巳', '手厥阴心包经', '大陵', '右', '足少阳胆经', '阳陵泉', '左'],
+        ['丙午', '手少阴心经', '通里', '右', '足阳明胃经', '上巨虚', '左'],
+        ['丁未', '手太阴肺经', '尺泽', '左', '足太阳膀胱经', '京骨', '右'],
+        ['戊申', '手少阳三焦经', '外关', '左', '足厥阴肝经', '太冲', '右'],
+        ['己酉', '手阳明大肠经', '阳溪', '右', '足少阴肾经', '然谷', '左'],
+        ['庚戌', '手太阳小肠经', '腕骨', '左', '足太阴脾经', '阴陵泉', '右'],
+        ['辛亥', '手厥阴心包经', '间使', '左', '足少阳胆经', '足临泣', '右'],
+        ['壬子', '手少阴心经', '少府', '左', '足阳明胃经', '解溪', '右'],
+        ['癸丑', '手太阴肺经', '列缺', '右', '足太阳膀胱经', '申脉', '左'],
+        ['甲寅', '手少阳三焦经', '中渚', '右', '足厥阴肝经', '中封', '左'],
+        ['乙卯', '手阳明大肠经', '曲池', '左', '足少阴肾经', '太溪', '右'],
+        ['丙辰', '手太阳小肠经', '养老', '右', '足太阴脾经', '公孙', '左'],
+        ['丁巳', '手厥阴心包经', '曲泽', '右', '足少阳胆经', '悬钟', '左'],
+        ['戊午', '手少阴心经', '神门', '右', '足阳明胃经', '足三里', '左'],
+        ['己未', '手太阴肺经', '鱼际', '左', '足太阳膀胱经', '昆仑', '右'],
+        ['庚申', '手少阳三焦经', '液门', '左', '足厥阴肝经', '曲泉', '右'],
+        ['辛酉', '手阳明大肠经', '手三里', '右', '足少阴肾经', '复溜', '左'],
+        ['壬戌', '手太阳小肠经', '阳谷', '左', '足太阴脾经', '三阴交', '右'],
+        ['癸亥', '手厥阴心包经', '内关', '左', '足少阳胆经', '丘墟', '右']
+    ];
+
+    // 灸穴按地支取，六日一轮
+    var MOXA_POINTS = [
+        { name: '中极', location: '任脉 · 脐下四寸' },
+        { name: '关元', location: '任脉 · 脐下三寸' },
+        { name: '气海', location: '任脉 · 脐下一点五寸' },
+        { name: '神阙', location: '任脉 · 脐中' },
+        { name: '中脘', location: '任脉 · 脐上四寸' },
+        { name: '膻中', location: '任脉 · 两乳头连线中点' }
+    ];
+
+    // 公历日 → 六十甲子序号（0 = 甲子）
+    function ganzhiIndex(date) {
+        var y = date.getFullYear();
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        var a = Math.floor((14 - m) / 12);
+        var yy = y + 4800 - a;
+        var mm = m + 12 * a - 3;
+        var jdn = d + Math.floor((153 * mm + 2) / 5) + 365 * yy +
+            Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
+        return (jdn + 49) % 60;
+    }
+
+    var acuState = { offset: 0 };
+
+    // offset 以「天」为单位，0 表示今天
+    function acuModel(offset) {
+        var day = new Date();
+        day.setHours(0, 0, 0, 0);
+        day.setDate(day.getDate() + offset);
+        var idx = ganzhiIndex(day);
+        var row = ACU_ROWS[idx];
+        var zhi = idx % 12;
+        return {
+            offset: offset,
+            isToday: offset === 0,
+            dateLabel: (day.getMonth() + 1) + '月' + day.getDate() + '日 ' + WEEK[day.getDay()],
+            ganzhi: GAN[idx % 10] + ZHI[zhi],
+            hand: { meridian: row[1], point: row[2], side: row[3] },
+            foot: { meridian: row[4], point: row[5], side: row[6] },
+            moxa: MOXA_POINTS[zhi % 6]
+        };
+    }
+
+    function renderAcu() {
+        var m = acuModel(acuState.offset);
+        $('acuDate').textContent = m.dateLabel;
+        $('acuGz').textContent = m.ganzhi + '日';
+        $('acuHandName').textContent = m.hand.point;
+        $('acuHandMeridian').textContent = m.hand.meridian;
+        $('acuHandSide').textContent = m.hand.side + '侧';
+        $('acuFootName').textContent = m.foot.point;
+        $('acuFootMeridian').textContent = m.foot.meridian;
+        $('acuFootSide').textContent = m.foot.side + '侧';
+        $('acuMoxaName').textContent = m.moxa.name;
+        $('acuMoxaLocation').textContent = m.moxa.location;
+        setHidden($('acuReset'), m.isToday);
+        return m;
+    }
+
+    var activeTab = 'tongue';
+    var scrollMemo = { tongue: 0, acu: 0 };
+
+    function switchTab(name) {
+        if (name === activeTab) {
+            return;
+        }
+        scrollMemo[activeTab] = window.pageYOffset || window.scrollY || 0;
+        activeTab = name;
+        var onAcu = name === 'acu';
+        setHidden($('paneTongue'), onAcu);
+        setHidden($('paneAcu'), !onAcu);
+        $('tabTongue').classList.toggle('is-active', !onAcu);
+        $('tabAcu').classList.toggle('is-active', onAcu);
+        $('tabTongue').setAttribute('aria-selected', onAcu ? 'false' : 'true');
+        $('tabAcu').setAttribute('aria-selected', onAcu ? 'true' : 'false');
+        if (onAcu) {
+            renderAcu();
+        }
+        if (typeof window.scrollTo === 'function') {
+            window.scrollTo(0, scrollMemo[name] || 0);
+        }
+    }
+
+    function initTabs() {
+        if (!$('tabTongue')) {
+            return;
+        }
+        $('tabTongue').addEventListener('click', function () {
+            switchTab('tongue');
+        });
+        $('tabAcu').addEventListener('click', function () {
+            switchTab('acu');
+        });
+        $('acuPrev').addEventListener('click', function () {
+            acuState.offset -= 1;
+            renderAcu();
+        });
+        $('acuNext').addEventListener('click', function () {
+            acuState.offset += 1;
+            renderAcu();
+        });
+        $('acuReset').addEventListener('click', function () {
+            acuState.offset = 0;
+            renderAcu();
+        });
+        $('acuReset').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                acuState.offset = 0;
+                renderAcu();
+            }
+        });
+        renderAcu();
+    }
+
     bind();
     updateChrome();
+    initTabs();
 
     // 暴露给外部调用（也便于自动化测试）
     window.TongueApp = {
@@ -1626,6 +2078,16 @@ img { max-width: 100%; }
         handleFile: handleFile,
         parseResult: parseResult,
         state: state
+    };
+
+    window.JiuApp = {
+        ganzhiIndex: ganzhiIndex,
+        acuModel: acuModel,
+        renderAcu: renderAcu,
+        switchTab: switchTab,
+        acuRows: ACU_ROWS,
+        moxaPoints: MOXA_POINTS,
+        state: acuState
     };
 })();
 </script>
