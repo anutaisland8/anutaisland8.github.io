@@ -3151,6 +3151,9 @@ img { max-width: 100%; }
     var AN_DING_SRC = '1.mp3';
     var anTimer = { idx: -1, left: 0, total: 0, channel: '', sel: -1, selChannel: '', tid: 0, dings: 0 };
     var anDingEl = null;
+    var anDingBroken = false;   // 文件缺失 / 编码不支持：直接走合成音
+    var anDingCtx = null;       // 兜底提示音的 AudioContext
+    var anDingState = '';       // 最近一次怎么响的：file / beep / silent(...)
 
     function anFmtSeconds(sec) {
         if (sec < 60) {
@@ -3166,6 +3169,14 @@ img { max-width: 100%; }
         if (!anDingEl) {
             try {
                 anDingEl = (typeof Audio === 'function') ? new Audio(AN_DING_SRC) : null;
+                if (anDingEl) {
+                    anDingEl.preload = 'auto';
+                    if (anDingEl.addEventListener) {
+                        anDingEl.addEventListener('error', function () {
+                            anDingBroken = true;
+                        });
+                    }
+                }
             } catch (e) {
                 anDingEl = null;
             }
@@ -3173,38 +3184,152 @@ img { max-width: 100%; }
         return anDingEl;
     }
 
+    // ---- 兜底提示音：mp3 被自动播放策略拦掉（iframe / 省电模式）时也得有声音 ----
+    function anAudioCtx() {
+        if (anDingCtx) {
+            return anDingCtx;
+        }
+        var AC = (typeof window !== 'undefined') && (window.AudioContext || window.webkitAudioContext);
+        if (!AC) {
+            return null;
+        }
+        try {
+            anDingCtx = new AC();
+        } catch (e) {
+            anDingCtx = null;
+        }
+        return anDingCtx;
+    }
+
+    // 在用户点击里把 AudioContext 唤醒：之后由定时器触发也照样能出声
+    function anAudioUnlock() {
+        var ctx = anAudioCtx();
+        if (!ctx) {
+            return;
+        }
+        try {
+            if (ctx.state === 'suspended' && ctx.resume) {
+                ctx.resume();
+            }
+            // 零长度静音 buffer：iOS 上必须真播一次，ctx 才会进入 running
+            var buf = ctx.createBuffer(1, 1, ctx.sampleRate);
+            var src = ctx.createBufferSource();
+            src.buffer = buf;
+            src.connect(ctx.destination);
+            src.start(0);
+        } catch (e) {
+            // 唤不醒就算了，交给 mp3 那条路
+        }
+    }
+
+    // 合成一声「叮」：正弦 + 快速衰减，约 0.4 秒
+    function anDingBeep() {
+        var ctx = anAudioCtx();
+        if (!ctx) {
+            anDingState = 'silent(no-ctx)';
+            return false;
+        }
+        try {
+            if (ctx.state === 'suspended' && ctx.resume) {
+                ctx.resume();
+            }
+            var t = ctx.currentTime + 0.02;
+            var osc = ctx.createOscillator();
+            var gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, t);
+            osc.frequency.exponentialRampToValueAtTime(1320, t + 0.12);
+            gain.gain.setValueAtTime(0.0001, t);
+            gain.gain.exponentialRampToValueAtTime(0.35, t + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.42);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(t);
+            osc.stop(t + 0.45);
+            return true;
+        } catch (e) {
+            anDingState = 'silent(' + ((e && e.name) || 'error') + ')';
+            return false;
+        }
+    }
+
     // prime = 借用户这次点击先把音频解开：定时器触发的 play 会被自动播放策略拦掉，
     // 尤其 iOS 上必须由用户手势先播过一次，所以这里静音播一下就停。
-    function anDing(prime) {
-        anTimer.dings += prime ? 0 : 1;
+    function anDingPrime() {
         var el = anDingSource();
         if (!el) {
             return;
         }
-        try {
-            el.currentTime = 0;
-            if (prime) {
-                el.muted = true;
-            }
-            var p = el.play();
-            if (p && p.then) {
-                p.then(function () {
-                    if (prime) {
-                        el.pause();
-                        el.currentTime = 0;
-                        el.muted = false;
-                    }
-                })['catch'](function () {
-                    el.muted = false;
-                });
-            } else if (prime) {
+        var restore = function () {
+            try {
                 el.pause();
                 el.currentTime = 0;
-                el.muted = false;
+            } catch (e) {
+                // 忽略
+            }
+            el.muted = false;
+        };
+        try {
+            el.muted = true;
+            var p = el.play();
+            if (p && p.then) {
+                p.then(restore)['catch'](function () {
+                    el.muted = false;
+                });
+            } else {
+                restore();
             }
         } catch (e) {
-            // 播放失败不影响倒计时
+            el.muted = false;
         }
+    }
+
+    // 真正响：先走 mp3；被拒 / 加载失败就换成合成音，两条都不行才算没声
+    function anDingPlay() {
+        var el = anDingSource();
+        if (!el || anDingBroken) {
+            anDingState = 'beep(mp3-unavailable)';
+            if (!anDingBeep()) {
+                anDingState = 'silent(mp3-unavailable)';
+            }
+            return;
+        }
+        try {
+            el.muted = false;
+            el.currentTime = 0;
+        } catch (e) {
+            // 忽略：下面 play() 会再报
+        }
+        var p = null;
+        try {
+            p = el.play();
+        } catch (e) {
+            p = null;
+        }
+        if (!p || !p.then) {
+            // 老浏览器没有 promise 版 play()，当它已经响了
+            anDingState = 'file';
+            return;
+        }
+        p.then(function () {
+            anDingState = 'file';
+        })['catch'](function (e) {
+            // NotAllowedError 是自动播放策略；NotSupportedError 是解码 / 文件问题
+            anDingState = 'beep(' + ((e && e.name) || 'blocked') + ')';
+            if (!anDingBeep()) {
+                anDingState = 'silent(' + ((e && e.name) || 'blocked') + ')';
+            }
+        });
+    }
+
+    function anDing(prime) {
+        if (prime) {
+            anDingPrime();
+            anAudioUnlock();
+            return;
+        }
+        anTimer.dings += 1;
+        anDingPlay();
     }
 
     function anClearTimer() {
@@ -3562,6 +3687,8 @@ img { max-width: 100%; }
 
     meLoad();
     llmLoad();
+    // 提前把提示音取下来：倒计时结束时再加载会晚半拍，听感上像「没响」
+    anDingSource();
     renderLlmText();
     bind();
     updateChrome();
@@ -3619,6 +3746,8 @@ img { max-width: 100%; }
         toggleCountdown: anToggleCountdown,
         tick: anTick,
         dingSrc: AN_DING_SRC,
+        dingState: function () { return anDingState; },
+        ding: anDing,
         plusMap: anPlusMap,
         pulseChannels: PULSE_CHANNELS,
         pulseOpposite: PULSE_OPPOSITE,
