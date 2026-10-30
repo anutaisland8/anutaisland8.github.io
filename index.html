@@ -1317,64 +1317,99 @@ img { max-width: 100%; }
 
 <script>
 /* ==SHECORE-START== */
-// 针灸取穴与模型配置的内核（Rust 编译的 wasm）。由 wasm-core/tools/pack.js 生成，勿手改。
+// 内核（Rust 编译的 wasm）：干支与针穴、按跷推算、模型配置与提示词。由 pack.js 生成，勿手改。
 // 数据段加密存放，敏感项需握手解锁；加载前校验指纹，字节被替换则拒绝启用。
 (function () {
     'use strict';
 
     var B64 = [
-    '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'
+    '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'
     ].join('');
 
-    var H1 = 0xdfac4975, H2 = 0x74ab2a43, MAGIC = 89792;
+    var H1 = 0xde5e61df, H2 = 0x303ced19, MAGIC = 89793;
 
     function dec64(s) {
         var AL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
@@ -1420,6 +1455,7 @@ img { max-width: 100%; }
 
             var mem = new Uint8Array(ex.memory.buffer);
             var ptr = ex._p();
+            var inPtr = ex._ai();
             var dec = new TextDecoder('utf-8');
             var TK = 0;
 
@@ -1435,6 +1471,21 @@ img { max-width: 100%; }
 
             function cfg(slot) {
                 return take(ex._k(slot));
+            }
+
+            // 按跷：经络名 → 编号（编号就是内核取穴表的行序）
+            var AN_ELEMS = ['火', '土', '金', '水', '木'];
+            var anOrderMap = null;
+            function anOrder() {
+                if (anOrderMap) { return anOrderMap; }
+                var map = {}, lines = take(ex._at()).split('\u001e'), n = 0, i;
+                for (i = 0; i < lines.length; i += 1) {
+                    if (!lines[i]) { continue; }
+                    map[lines[i].split('\u001f')[0]] = n;
+                    n += 1;
+                }
+                anOrderMap = map;
+                return map;
             }
 
             core = {
@@ -1466,6 +1517,58 @@ img { max-width: 100%; }
                         if (!lines[i]) { continue; }
                         var f = lines[i].split('\u001f');
                         out.push({ name: f[0], location: f[1] });
+                    }
+                    return out;
+                },
+                // ---- 按跷 ----
+                anTotalSeconds: function () { return ex._as(); },
+                ganChars: function () { return cfg(84); },
+                zhiChars: function () { return cfg(85); },
+                // 十天干合化出的五行，下标与天干同序
+                anHeHua: function () { return take(ex._ax()).split('\u001f'); },
+                // 取穴表：12 行 { channel, points: { 火, 土, 金, 水, 木 } }
+                anPoints: function () {
+                    var out = [], lines = take(ex._at()).split('\u001e'), i, j;
+                    for (i = 0; i < lines.length; i += 1) {
+                        if (!lines[i]) { continue; }
+                        var f = lines[i].split('\u001f');
+                        var points = {};
+                        for (j = 0; j < AN_ELEMS.length; j += 1) {
+                            points[AN_ELEMS[j]] = f[j + 1] || '';
+                        }
+                        out.push({ channel: f[0], points: points });
+                    }
+                    return out;
+                },
+                // 当日计划：plus 先写进内核输入区（12 字节），再调 _ap 取回结果
+                anPlan: function (date, birth, plus) {
+                    var map = anOrder(), i, ch;
+                    var buf = new Uint8Array(ex.memory.buffer);
+                    for (i = 0; i < 12; i += 1) { buf[inPtr + i] = 0; }
+                    for (ch in plus) {
+                        if (Object.prototype.hasOwnProperty.call(plus, ch) && map[ch] !== undefined) {
+                            i = plus[ch] | 0;
+                            buf[inPtr + map[ch]] = i > 255 ? 255 : (i < 0 ? 0 : i);
+                        }
+                    }
+                    var len = ex._ap(
+                        date.getFullYear(), date.getMonth() + 1, date.getDate(),
+                        birth ? birth.getFullYear() : 0,
+                        birth ? birth.getMonth() + 1 : 0,
+                        birth ? birth.getDate() : 0
+                    );
+                    var out = [], lines = take(len).split('\u001e');
+                    for (i = 0; i < lines.length; i += 1) {
+                        if (!lines[i]) { continue; }
+                        var f = lines[i].split('\u001f');
+                        out.push({
+                            channel: f[0],
+                            element: f[1],
+                            direction: f[2],
+                            point: f[3],
+                            seconds: parseInt(f[4], 10) || 0,
+                            percent: (parseInt(f[5], 10) || 0) / 10000
+                        });
                     }
                     return out;
                 },
@@ -2390,451 +2493,67 @@ img { max-width: 100%; }
     }
 
     // ================= 按跷：五运六气 + 天干合化取穴 =================
-    // 三条独立链路：时长走五运六气（叠加十二经 plus），穴位走当日天干合化的五行，
-    // 左右侧走当日干支阴阳（阳日顺、阴日逆）。入口参数是「生日 + 十二经 plus」。
-    // 这段刻意保持明文，方便自己调权重，也方便测试直接加载。
+    // 算法在 Rust 内核里（wasm-core/src/lib.rs 的「按跷」段）：五运六气的七项权重、
+    // 十二经影响分、年龄配比、plus 折算、归一化取整，以及穴位与左右侧，都由 CORE.anPlan
+    // 一次算完。页面只做三件事：拼 plus（舌象经络 + 六部脉）、画列表、管倒计时。
+    // 取穴表（12 经 × 火土金水木）在 wasm-core/data/anqiao.json，加密后编进数据段。
 
+    // 经络名单：顺序即 plus 的下标顺序，测试与基准快照都按它对齐，不要随意调
     var AN_CHANNELS = [
         '手太阴肺经', '手阳明大肠经', '足阳明胃经', '足太阴脾经',
         '手少阴心经', '手太阳小肠经', '足太阳膀胱经', '足少阴肾经',
         '手厥阴心包经', '手少阳三焦经', '足少阳胆经', '足厥阴肝经'
     ];
 
-    // 阴阳只用于定按跷的左右侧（见 anSideOf），补泻一律按该经对应的那一部脉判
-    var AN_YIN = ['手太阴肺经', '足太阴脾经', '手少阴心经', '足少阴肾经', '手厥阴心包经', '足厥阴肝经'];
-    var AN_YANG = ['手阳明大肠经', '足阳明胃经', '手太阳小肠经', '足太阳膀胱经', '手少阳三焦经', '足少阳胆经'];
+    var AN_GAN = coreReady() ? CORE.ganChars() : '';
+    var AN_ZHI = coreReady() ? CORE.zhiChars() : '';
+    var AN_TOTAL_SECONDS = coreReady() ? CORE.anTotalSeconds() : 1800;
 
-    // 经络乘数：阳经与脾胃偏重，心包与肝偏轻
-    var AN_MULT = {
-        '手太阴肺经': 4, '手阳明大肠经': 10, '足阳明胃经': 10, '足太阴脾经': 4,
-        '手少阴心经': 3, '手太阳小肠经': 7, '足太阳膀胱经': 7, '足少阴肾经': 3,
-        '手厥阴心包经': 2, '手少阳三焦经': 5, '足少阳胆经': 5, '足厥阴肝经': 2
-    };
+    // 天干五合化气（甲己化土、乙庚化金…）与取穴表都由内核带出，
+    // 页面只保留引用：表是数据，算法在 wasm 里。
+    var AN_HE_HUA = {};
+    var AN_POINTS = [];
+    (function anFromCore() {
+        if (!coreReady()) {
+            return;
+        }
+        var els = CORE.anHeHua();
+        for (var i = 0; i < AN_GAN.length && i < els.length; i += 1) {
+            AN_HE_HUA[AN_GAN.charAt(i)] = els[i];
+        }
+        AN_POINTS = CORE.anPoints();
+    })();
 
-    // 一天按跷总时长（秒）
-    var AN_TOTAL_SECONDS = 1800;
-
-    // 天干五合化气：甲己化土、乙庚化金、丙辛化水、丁壬化木、戊癸化火
-    var AN_HE_HUA = {
-        甲: '土', 己: '土',
-        乙: '金', 庚: '金',
-        丙: '水', 辛: '水',
-        丁: '木', 壬: '木',
-        戊: '火', 癸: '火'
-    };
-
-    // 按跷取穴表：十二经 × 五行。当日天干合化出哪一行，十二经就各取该行的穴位。
-    // 与旧版「60 日干支块」的区别：穴位只由当日天干决定，与旬、与经序都无关；
-    // 顺逆由干支阴阳定（阳顺阴逆，见 anDailyPlan），左右由顺逆定（见 anSideOf）。
-    // 列的排列沿用「火 土 金 水 木」，与运气七项里的五行名对得上，不另设编号。
-    // 行的顺序就是页面列表顺序，沿用旧版 胆→肝→肺→…（现在只是稳定排序，无推算含义）。
-    var AN_POINTS = [
-        { channel: '足少阳胆经', points: { 火: '光明', 土: '阳陵泉', 金: '足临泣', 水: '悬钟', 木: '丘墟' } },
-        { channel: '足厥阴肝经', points: { 火: '行间', 土: '太冲', 金: '中封', 水: '曲泉', 木: '蠡沟' } },
-        { channel: '手太阴肺经', points: { 火: '鱼际', 土: '太渊', 金: '经渠', 水: '尺泽', 木: '列缺' } },
-        { channel: '手阳明大肠经', points: { 火: '阳溪', 土: '曲池', 金: '手三里', 水: '合谷', 木: '三间' } },
-        { channel: '足阳明胃经', points: { 火: '解溪', 土: '足三里', 金: '丰隆', 水: '内庭', 木: '上巨虚' } },
-        { channel: '足太阴脾经', points: { 火: '三阴交', 土: '太白', 金: '血海', 水: '阴陵泉', 木: '公孙' } },
-        { channel: '手少阴心经', points: { 火: '少府', 土: '神门', 金: '灵道', 水: '少海', 木: '通里' } },
-        { channel: '手太阳小肠经', points: { 火: '阳谷', 土: '支正', 金: '后溪', 水: '腕骨', 木: '养老' } },
-        { channel: '足太阳膀胱经', points: { 火: '昆仑', 土: '委中', 金: '飞扬', 水: '京骨', 木: '申脉' } },
-        { channel: '足少阴肾经', points: { 火: '然谷', 土: '太溪', 金: '复溜', 水: '阴谷', 木: '照海' } },
-        { channel: '手厥阴心包经', points: { 火: '劳宫', 土: '大陵', 金: '间使', 水: '曲泽', 木: '内关' } },
-        { channel: '手少阳三焦经', points: { 火: '支沟', 土: '外关', 金: '中渚', 水: '液门', 木: '阳池' } }
-    ];
-
-    var AN_GAN = '甲乙丙丁戊己庚辛壬癸';
-    var AN_ZHI = '子丑寅卯辰巳午未申酉戌亥';
-
-    // 六气推演顺序（客气按此环转，主气也按这个本序排六步）
-    var AN_QI = ['厥阴风木', '少阴君火', '太阴湿土', '少阳相火', '阳明燥金', '太阳寒水'];
-
-    var AN_LIU_QI = {
-        '厥阴风木': ['足厥阴肝经', '手厥阴心包经'],
-        '少阴君火': ['手少阴心经', '足少阴肾经'],
-        '太阴湿土': ['足太阴脾经', '手太阴肺经'],
-        '少阳相火': ['手少阳三焦经', '足少阳胆经'],
-        '阳明燥金': ['手阳明大肠经', '足阳明胃经'],
-        '太阳寒水': ['足太阳膀胱经', '手太阳小肠经']
-    };
-
-    // 五运不及 / 太过 → 该多按的经络。**这两张表列的是「宜调之经」，不是病位**，两表来路不同：
-    //   不及 = 取「生我」之经（母），依《难经·六十九难》「虚者补其母」，属隔一层的补法；
-    //          经典所述病位在本脏（为所不胜者所乘，并连累子脏），若改按病位取经应列本脏
-    //          （如木运不及 → 肝胆），此处保留补母取穴。
-    //   太过 = 取「我克」之经（所胜），依《素问·气交变大论》「岁木太过…脾土受邪」，
-    //          即本气偏盛、克伐所胜，所胜受邪而虚，故补受克者。
-    // 土、水两运各带两条经（心与心包、小肠与三焦），为同气相求的扩展。
-    var AN_YUN_BU_JI = {
-        '木运不及': [['足少阴肾经', '足太阳膀胱经']],
-        '火运不及': [['足厥阴肝经', '足少阳胆经']],
-        '土运不及': [['手少阴心经', '手太阳小肠经'],['手厥阴心包经', '手少阳三焦经']],
-        '金运不及': [['足太阴脾经', '足阳明胃经']],
-        '水运不及': [['手太阴肺经', '手阳明大肠经']]
-    };
-
-    // 太过与上面「不及取母」不是同一种五行关系，勿混：这里是所胜受邪
-    var AN_YUN_TAI_GUO = {
-        '木运太过': [['足太阴脾经', '足阳明胃经']],
-        '火运太过': [['手太阴肺经', '手阳明大肠经']],
-        '土运太过': [['足少阴肾经', '足太阳膀胱经']],
-        '金运太过': [['足厥阴肝经', '足少阳胆经']],
-        '水运太过': [['手少阴心经', '手太阳小肠经'],['手厥阴心包经', '手少阳三焦经']]
-    };
-
-    // 地支 → [司天, 在泉]
-    var AN_SI_TIAN = {
-        子: ['少阴君火', '阳明燥金'], 午: ['少阴君火', '阳明燥金'],
-        丑: ['太阴湿土', '太阳寒水'], 未: ['太阴湿土', '太阳寒水'],
-        寅: ['少阳相火', '厥阴风木'], 申: ['少阳相火', '厥阴风木'],
-        卯: ['阳明燥金', '少阴君火'], 酉: ['阳明燥金', '少阴君火'],
-        辰: ['太阳寒水', '太阴湿土'], 戌: ['太阳寒水', '太阴湿土'],
-        巳: ['厥阴风木', '少阳相火'], 亥: ['厥阴风木', '少阳相火']
-    };
-
-    // 天干 → 岁运
-    var AN_SUI_YUN = {
-        甲: '土运太过', 乙: '金运不及', 丙: '水运太过', 丁: '木运不及', 戊: '火运太过',
-        己: '土运不及', 庚: '金运太过', 辛: '水运不及', 壬: '木运太过', 癸: '火运不及'
-    };
-
-    // 天干 → 五音（用于推主运起点）
-    var AN_WU_YIN = {
-        甲: '宫', 己: '宫', 乙: '商', 庚: '商', 丙: '羽',
-        辛: '羽', 丁: '角', 壬: '角', 戊: '徵', 癸: '徵'
-    };
-
-    // 儒略日与干支：与针灸页同一套换算法，0 = 甲子
-    function anJdn(y, m, d) {
-        var a = Math.floor((14 - m) / 12);
-        var yy = y + 4800 - a;
-        var mm = m + 12 * a - 3;
-        return d + Math.floor((153 * mm + 2) / 5) + 365 * yy +
-            Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
-    }
-
+    // 干支序号（0 = 甲子），由内核按儒略日换算
     function anGanzhiIndex(date) {
-        var jdn = anJdn(date.getFullYear(), date.getMonth() + 1, date.getDate());
-        return ((jdn + 49) % 60 + 60) % 60;
+        if (!coreReady()) {
+            return -1;
+        }
+        return CORE.ganzhiIndex(date);
     }
 
     function anRiGanzhi(date) {
         var i = anGanzhiIndex(date);
+        if (i < 0) {
+            return '';
+        }
         return AN_GAN.charAt(i % 10) + AN_ZHI.charAt(i % 12);
     }
 
-    // 当日天干合化出的五行（土/金/水/木/火），当日十二经共用同一列穴位
+    // 当日天干合化出的五行（火 / 土 / 金 / 水 / 木），十二经同取该列穴
     function anHeHuaOf(date) {
         return AN_HE_HUA[anRiGanzhi(date).charAt(0)] || '';
     }
 
-    function anYearGanzhi(year) {
-        var offset = (year - 1984) % 60;
-        if (offset < 0) {
-            offset += 60;
-        }
-        return AN_GAN.charAt(offset % 10) + AN_ZHI.charAt(offset % 12);
-    }
-
-    function anSuiYun(year) {
-        return AN_SUI_YUN[anYearGanzhi(year).charAt(0)] || '未知';
-    }
-
-    function anSiTianZaiQuan(year) {
-        var zhi = anYearGanzhi(year).charAt(1);
-        return AN_SI_TIAN[zhi] || ['未知', '未知'];
-    }
-
-    // 客气：三之气即司天，终之气即在泉，其余顺推
-    function anKeQi(year) {
-        var st = anSiTianZaiQuan(year);
-        var index = AN_QI.indexOf(st[0]);
-        var out = [];
-        for (var i = 0; i < 6; i += 1) {
-            if (i === 2) {
-                out.push(st[0]);
-            } else if (i === 5) {
-                out.push(st[1]);
-            } else {
-                out.push(AN_QI[(index - 2 + i + 6) % 6]);
-            }
-        }
-        return out;
-    }
-
-    function anZhuYun(year) {
-        var gan = anYearGanzhi(year).charAt(0);
-        var isTai = anSuiYun(year).indexOf('太过') >= 0;
-        var wuXing = ['木', '火', '土', '金', '水'];
-        var wuYin = ['角', '徵', '宫', '商', '羽'];
-        var idx = wuYin.indexOf(AN_WU_YIN[gan]);
-        if (idx < 0) {
-            idx = 0;
-        }
-        // 从当前音回到角（木），途中每次交替太过/不及
-        var woodTai = isTai;
-        for (var i = 0; i < idx; i += 1) {
-            woodTai = !woodTai;
-        }
-        var list = [];
-        var t = woodTai;
-        for (var j = 0; j < 5; j += 1) {
-            list.push(wuXing[j] + '运' + (t ? '太过' : '不及'));
-            t = !t;
-        }
-        return list;
-    }
-
-    function anKeYun(year) {
-        var sui = anSuiYun(year);
-        var wuXing = ['木', '火', '土', '金', '水'];
-        var start = wuXing.indexOf(sui.charAt(0));
-        if (start < 0) {
-            start = 0;
-        }
-        var list = [];
-        var t = sui.indexOf('太过') >= 0;
-        for (var i = 0; i < 5; i += 1) {
-            list.push(wuXing[(start + i) % 5] + '运' + (t ? '太过' : '不及'));
-            t = !t;
-        }
-        return list;
-    }
-
-    // 五运五步的日期界（大寒起算）
-    function anYunIndex(date) {
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        if ((m === 1 && d >= 20) || m === 2 || m === 3 || (m === 4 && d <= 3)) {
-            return 0;
-        }
-        if ((m === 4 && d >= 4) || m === 5 || (m === 6 && d <= 16)) {
-            return 1;
-        }
-        if ((m === 6 && d >= 17) || m === 7 || (m === 8 && d <= 30)) {
-            return 2;
-        }
-        if ((m === 8 && d >= 31) || m === 9 || m === 10 || (m === 11 && d <= 12)) {
-            return 3;
-        }
-        return 4;
-    }
-
-    // 六气六步的日期界
-    function anQiIndex(date) {
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        if ((m === 1 && d >= 21) || m === 2 || (m === 3 && d <= 21)) {
-            return 0;
-        }
-        if ((m === 3 && d > 21) || m === 4 || (m === 5 && d <= 21)) {
-            return 1;
-        }
-        if ((m === 5 && d > 21) || m === 6 || (m === 7 && d <= 22)) {
-            return 2;
-        }
-        if ((m === 7 && d > 22) || m === 8 || (m === 9 && d <= 22)) {
-            return 3;
-        }
-        if ((m === 9 && d > 22) || m === 10 || (m === 11 && d <= 22)) {
-            return 4;
-        }
-        return 5;
-    }
-
-    // 当天所处运气状态与各项权重
-    function anCalc(date) {
-        var year = date.getFullYear();
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        var zhuYun = anZhuYun(year);
-        var keYun = anKeYun(year);
-        var keQi = anKeQi(year);
-        var yunIdx = anYunIndex(date);
-        var qiIdx = anQiIndex(date);
-        var st = anSiTianZaiQuan(year);
-        var firstHalf = (m === 1 && d >= 20) || (m >= 2 && m <= 6) || (m === 7 && d <= 22);
-
-        // 岁半之前重司天，岁半之后重在泉
-        var pct = firstHalf
-            ? { sui: 30, siTian: 35, zaiQuan: 5, zhuQi: 5, keQi: 10, zhuYun: 5, keYun: 10 }
-            : { sui: 30, siTian: 10, zaiQuan: 30, zhuQi: 5, keQi: 10, zhuYun: 5, keYun: 10 };
-
-        return {
-            year: year,
-            firstHalf: firstHalf,
-            suiYun: anSuiYun(year),
-            siTian: st[0],
-            zaiQuan: st[1],
-            currentZhuYun: zhuYun[yunIdx],
-            currentKeYun: keYun[yunIdx],
-            currentZhuQi: AN_QI[qiIdx],
-            currentKeQi: keQi[qiIdx],
-            pct: pct
-        };
-    }
-
-    // 把当天的运气换算成「每条经络受到多少影响」
-    function anInfluence(r) {
-        var map = {};
-
-        function add(channel, weight) {
-            map[channel] = (map[channel] || 0) + weight;
-        }
-
-        function addGroup(channels, weight) {
-            for (var i = 0; i < channels.length; i += 1) {
-                add(channels[i], weight);
-            }
-        }
-
-        // 岁运、主运、客运：按运的太过/不及查表
-        var yunPairs = [
-            [r.suiYun, r.pct.sui],
-            [r.currentZhuYun, r.pct.zhuYun],
-            [r.currentKeYun, r.pct.keYun]
-        ];
-        for (var i = 0; i < yunPairs.length; i += 1) {
-            var yun = yunPairs[i][0];
-            var weight = yunPairs[i][1];
-            var groups = null;
-            if (yun.indexOf('不及') >= 0) {
-                groups = AN_YUN_BU_JI[yun];        // 取母（虚则补其母）
-            } else if (yun.indexOf('太过') >= 0) {
-                groups = AN_YUN_TAI_GUO[yun];      // 取所胜（受克而虚者）
-            }
-            if (!groups) {
-                continue;
-            }
-            for (var g = 0; g < groups.length; g += 1) {
-                addGroup(groups[g], weight);
-            }
-        }
-
-        // 司天、在泉、主气、客气：按六气查表
-        var qiPairs = [
-            [r.siTian, r.pct.siTian],
-            [r.zaiQuan, r.pct.zaiQuan],
-            [r.currentZhuQi, r.pct.zhuQi],
-            [r.currentKeQi, r.pct.keQi]
-        ];
-        for (var j = 0; j < qiPairs.length; j += 1) {
-            var name = qiPairs[j][0].replace(/\((司天|在泉)\)/g, '');
-            var list = AN_LIU_QI[name];
-            if (!list) {
-                continue;
-            }
-            addGroup(list, qiPairs[j][1]);
-        }
-
-        return map;
-    }
-
-    function anAge(birth, date) {
-        var age = date.getFullYear() - birth.getFullYear();
-        var m = date.getMonth() - birth.getMonth();
-        if (m < 0 || (m === 0 && date.getDate() < birth.getDate())) {
-            age -= 1;
-        }
-        return age;
-    }
-
-    // 先天（出生时运气）与当下（今日运气）按年龄配比，再叠加本人 plus 补偿
-    function anMerge(birthInf, birthRatio, curInf, curRatio, plusMap) {
-        var merged = {};
-
-        function addFrom(src, ratio) {
-            for (var k in src) {
-                if (!Object.prototype.hasOwnProperty.call(src, k)) {
-                    continue;
-                }
-                var mult = AN_MULT[k] || 1;
-                merged[k] = (merged[k] || 0) + src[k] * ratio * mult;
-            }
-        }
-
-        addFrom(birthInf, birthRatio);
-        addFrom(curInf, curRatio);
-
-        for (var c in plusMap) {
-            if (!Object.prototype.hasOwnProperty.call(plusMap, c)) {
-                continue;
-            }
-            // plus 的乘子固定为 10：单次命中 = PLUS_UNIT × 10 分，与运气七项同处 0~100 的量纲
-            merged[c] = (merged[c] || 0) + plusMap[c] * 10 * (AN_MULT[c] || 1);
-        }
-
-        return merged;
-    }
-
-    // 顺：阳经右、阴经左；逆：阳经左、阴经右
-    function anSideOf(channel, direction) {
-        var isYin = AN_YIN.indexOf(channel) >= 0;
-        if (direction === '顺') {
-            return isYin ? '左侧' : '右侧';
-        }
-        return isYin ? '右侧' : '左侧';
-    }
-
-    function anPointLabel(side, point) {
-        if (side === '左侧') {
-            return '左' + point;
-        }
-        if (side === '右侧') {
-            return '右' + point;
-        }
-        if (side === '双侧') {
-            return '双' + point;
-        }
-        return point;
-    }
-
-    // 给定日期、生日与 plus，算出当天要按的 12 条
+    // 当日计划：条数、穴位、左右、秒数全部由内核算出，页面只补一个干支
     function anDailyPlan(date, birth, plusMap) {
-        var idx = anGanzhiIndex(date);
-        // 干支阴阳：六十甲子里阳干只配阳支（甲子、丙寅…），所以序号奇偶就是当日的阴/阳。阳日顺、阴日逆。
-        var direction = (idx % 2 === 0) ? '顺' : '逆';
-        // 当日天干合化的五行，定十二经各取哪一列穴位；十二经同日同列
-        var gan = AN_GAN.charAt(idx % 10);
-        var element = AN_HE_HUA[gan] || '';
-
-        var curInf = anInfluence(anCalc(date));
-        var merged;
-        if (birth) {
-            var birthInf = anInfluence(anCalc(birth));
-            var age = anAge(birth, date);
-            var birthRatio = age <= 16 ? 0.7 : (age <= 50 ? 0.4 : 0.6);
-            var curRatio = age <= 16 ? 0.3 : (age <= 50 ? 0.6 : 0.4);
-            merged = anMerge(birthInf, birthRatio, curInf, curRatio, plusMap);
-        } else {
-            // 没填出生日期：只按当日运气分（页面会先用空状态引导去填，这里保底不报错）
-            merged = anMerge({}, 0, curInf, 1, plusMap);
+        if (!coreReady()) {
+            return [];
         }
-        var total = 0;
-        for (var k in merged) {
-            if (Object.prototype.hasOwnProperty.call(merged, k)) {
-                total += merged[k];
-            }
-        }
-
-        var plan = [];
-        for (var i = 0; i < AN_POINTS.length; i += 1) {
-            var row = AN_POINTS[i];
-            var channel = row.channel;
-            var percent = total > 0 ? (merged[channel] || 0) / total : 0;
-            var seconds = Math.floor(AN_TOTAL_SECONDS * percent);
-            if (seconds <= 0) {
-                continue;
-            }
-            plan.push({
-                channel: channel,
-                ganzhi: gan + AN_ZHI.charAt(idx % 12),
-                element: element,
-                direction: direction,
-                point: anPointLabel(anSideOf(channel, direction), row.points[element]),
-                seconds: seconds,
-                percent: percent
-            });
+        var plan = CORE.anPlan(date, birth, plusMap || {});
+        var gz = anRiGanzhi(date);
+        for (var i = 0; i < plan.length; i += 1) {
+            plan[i].ganzhi = gz;
         }
         return plan;
     }
@@ -2958,7 +2677,7 @@ img { max-width: 100%; }
         return '';
     }
 
-    // plus 单位：某经每命中一次加多少。真正的权重是 PLUS_UNIT × 10（乘子见 anMerge），
+    // plus 单位：某经每命中一次加多少。真正的权重是 PLUS_UNIT × 10（乘子在核心里），
     // 取 1 时单次命中 = 10 分，与「客气」一项等值；运气七项合计 100 分，个体补偿不宜与之同量级。
     var PLUS_UNIT = 1;
 
@@ -3150,6 +2869,16 @@ img { max-width: 100%; }
         setHidden($('anReset'), anState.offset === 0);
 
         var box = $('anList');
+        // 推算全在内核里：取不到内核就直说，别显示一份算不出来的空表
+        if (!coreReady()) {
+            anResetTimer();
+            anState.plan = [];
+            box.innerHTML = '<div class="an-empty">推算内核不可用，按跷页暂时打不开。<br>' +
+                '刷新一下页面；一直这样说明页面文件被改动过。</div>';
+            $('anTotalMeta').textContent = '不可用';
+            return;
+        }
+
         var birth = meBirthDate();
         if (!birth) {
             anResetTimer();
@@ -3414,8 +3143,7 @@ img { max-width: 100%; }
         me: meState,
         ganzhiIndex: anGanzhiIndex,
         riGanzhi: anRiGanzhi,
-        calc: anCalc,
-        influence: anInfluence,
+        core: coreReady,
         plan: anDailyPlan,
         timer: anTimer,
         startCountdown: anStartCountdown,
