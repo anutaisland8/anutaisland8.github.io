@@ -259,14 +259,6 @@ button::after {
     line-height: 1.7;
 }
 
-.error-link {
-    display: block;
-    margin-top: 10px;
-    color: #557a36;
-    font-size: 12.50px;
-    text-align: center;
-}
-
 /* ---------- 舌象特征 ---------- */
 .feature-grid {
     display: flex;
@@ -1127,6 +1119,29 @@ img { max-width: 100%; }
     font-size: 13px;
 }
 
+.me-value {
+    flex: 1;
+    color: #2f3d26;
+    font-size: 13px;
+    line-height: 1.5;
+    word-break: break-all;
+}
+
+.me-link {
+    margin-top: 12px;
+    padding-top: 11px;
+    border-top: 1px solid #eef2e8;
+    color: #557a36;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.me-link:active {
+    opacity: 0.6;
+}
+
 .pulse-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -1249,7 +1264,6 @@ img { max-width: 100%; }
         <span class="error-title">分析未完成</span>
         <span class="error-message" id="errorMessage"></span>
         <button class="primary-button" id="retryBtn" type="button">重试</button>
-        <span class="error-link" id="cfgEntry" role="button" tabindex="0">接口不通？配置自定义模型 →</span>
     </div>
 
     <!-- 结构化结果：随流式解析逐步补全 -->
@@ -1377,6 +1391,20 @@ img { max-width: 100%; }
             <div class="pulse-grid" id="pulseGrid"></div>
         </div>
 
+        <div class="card">
+            <div class="card-head">
+                <span class="card-title">模型接口</span>
+                <span class="card-hint">存于本机</span>
+            </div>
+
+            <div class="me-field">
+                <span class="me-label">当前使用</span>
+                <span class="me-value" id="meLlmText">默认接口</span>
+            </div>
+
+            <div class="me-link" id="cfgEntry" role="button" tabindex="0">配置自定义模型 →</div>
+        </div>
+
         <div class="disclaimer">
             <span>以上资料只保存在本机 localStorage，不上传任何服务器；清除浏览器数据会一并清除。脉象选择仅为日常调理参考，不作诊断依据。</span>
         </div>
@@ -1429,11 +1457,11 @@ img { max-width: 100%; }
     </div>
 </div>
 
-<!-- 自定义模型接口弹层：舌象分析调用模型异常时弹出，也可从错误卡片再进来 -->
+<!-- 自定义模型接口弹层：入口在「我的」页，换接口 / 改模型 / 填 Key 都在这里 -->
 <div class="qr-mask hidden" id="cfgMask">
     <div class="cfg-panel" id="cfgPanel">
         <span class="cfg-title">自定义模型接口</span>
-        <span class="cfg-desc">舌象分析调用模型失败时可以换一个接口。三项留空即用默认接口，配置只存在本机浏览器，不上传。</span>
+        <span class="cfg-desc">换一个模型来解析舌象。三项留空即用默认接口，配置只存在本机浏览器，不上传。</span>
         <label class="cfg-field">
             <span class="cfg-label">Base URL</span>
             <input class="cfg-input" id="cfgBase" type="url" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="https://…/v1">
@@ -1450,7 +1478,7 @@ img { max-width: 100%; }
         <button class="cfg-save" id="cfgSave" type="button">保存并重试</button>
         <div class="cfg-actions">
             <span class="cfg-reset" id="cfgReset" role="button" tabindex="0">恢复默认</span>
-            <span class="cfg-close" id="cfgClose" role="button" tabindex="0">先不设置</span>
+            <span class="cfg-close" id="cfgClose" role="button" tabindex="0">取消</span>
         </div>
     </div>
 </div>
@@ -2439,8 +2467,6 @@ img { max-width: 100%; }
         }
 
         (async function run() {
-            // 连不上、HTTP 报错、模型没吐字，都算「调用异常」，会弹出接口配置
-            var stage = 'connect';
             try {
                 var resp = await fetch(llmEndpoint(llm.base), {
                     method: 'POST',
@@ -2451,7 +2477,6 @@ img { max-width: 100%; }
                     body: JSON.stringify(payload),
                     signal: controller.signal
                 });
-                stage = 'status';
 
                 if (!resp.ok) {
                     var message = '接口返回 ' + resp.status + '，请稍后重试';
@@ -2463,9 +2488,7 @@ img { max-width: 100%; }
                     } catch (e) {
                         // 保持默认提示
                     }
-                    var httpErr = new Error(message);
-                    httpErr.llmIssue = true;
-                    throw httpErr;
+                    throw new Error(message);
                 }
 
                 if (!resp.body || !resp.body.getReader) {
@@ -2475,7 +2498,15 @@ img { max-width: 100%; }
                     var reader = resp.body.getReader();
                     var decoder = new TextDecoder('utf-8');
                     while (true) {
-                        var step = await reader.read();
+                        var step;
+                        try {
+                            step = await reader.read();
+                        } catch (readErr) {
+                            if (controller.signal.aborted) {
+                                break;
+                            }
+                            throw readErr;
+                        }
                         if (step.done) {
                             break;
                         }
@@ -2494,9 +2525,7 @@ img { max-width: 100%; }
                 }
 
                 if (!state.rawText) {
-                    var emptyErr = new Error('模型没有返回内容，请换一张照片重试');
-                    emptyErr.llmIssue = true;
-                    throw emptyErr;
+                    throw new Error('模型没有返回内容，请换一张照片重试');
                 }
                 if (controller.signal.aborted) {
                     return;
@@ -2527,11 +2556,6 @@ img { max-width: 100%; }
                 state.errorMessage = text;
                 paintResult();
                 updateChrome();
-
-                // 连不上 / HTTP 报错 / 模型没吐字：直接弹出接口配置，省得用户自己找原因
-                if ((err && err.llmIssue) || stage === 'connect') {
-                    openCfg();
-                }
             }
         })();
     }
@@ -2578,6 +2602,21 @@ img { max-width: 100%; }
             (llmEndpoint(c.base) ? ' · ' + llmEndpoint(c.base) : '');
     }
 
+    // 我的页那一行「当前使用」：保存 / 恢复后同步
+    function renderLlmText() {
+        var node = $('meLlmText');
+        if (!node) {
+            return;
+        }
+        var c = llmConfig();
+        if (!c.custom) {
+            node.textContent = '默认接口' + (c.defaultModel ? ' · ' + c.defaultModel : '');
+            return;
+        }
+        node.textContent = '自定义' + (c.model ? ' · ' + c.model : '') +
+            (c.base ? ' · ' + c.base : '');
+    }
+
     function cfgSetStatus(text, bad) {
         var node = $('cfgStatus');
         if (!node) {
@@ -2604,6 +2643,8 @@ img { max-width: 100%; }
         $('cfgKey').value = custom.key || '';
         $('cfgBase').placeholder = eff.defaultBase || 'https://…/v1';
         $('cfgModel').placeholder = eff.defaultModel || '模型名称';
+        // 有图才谈得上「重试」，没图就是单纯保存
+        $('cfgSave').textContent = state.base64 ? '保存并重试' : '保存';
         cfgSetStatus(cfgStatusText(), false);
         setHidden(box, false);
         document.body.classList.add('modal-open');
@@ -2614,7 +2655,7 @@ img { max-width: 100%; }
         document.body.classList.remove('modal-open');
     }
 
-    // 保存后立刻用新配置重跑：失败时用户点一下就能验证
+    // 有图时保存后立刻用新配置重跑：失败时用户点一下就能验证
     function applyCfg() {
         var base = llmTrim($('cfgBase').value);
         if (base && !/^https?:\/\//i.test(base)) {
@@ -2626,11 +2667,14 @@ img { max-width: 100%; }
             model: $('cfgModel').value,
             key: $('cfgKey').value
         });
+        renderLlmText();
         closeCfg();
         if (!saved) {
             toast('已恢复默认接口');
-        } else {
+        } else if (state.base64) {
             toast('已保存自定义接口，正在重试');
+        } else {
+            toast('已保存自定义接口');
         }
         if (state.base64) {
             analyze();
@@ -2644,6 +2688,7 @@ img { max-width: 100%; }
         $('cfgModel').value = '';
         $('cfgKey').value = '';
         cfgSetStatus(cfgStatusText(), false);
+        renderLlmText();
         closeCfg();
         toast('已恢复默认接口');
         if (state.base64) {
@@ -3473,6 +3518,7 @@ img { max-width: 100%; }
 
     meLoad();
     llmLoad();
+    renderLlmText();
     bind();
     updateChrome();
     initTabs();
