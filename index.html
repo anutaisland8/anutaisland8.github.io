@@ -860,6 +860,217 @@ img { max-width: 100%; }
     color: #8a6a2f;
 }
 
+/* ---------- 按跷页 ---------- */
+/* 两列排布：一行两个经络 */
+.an-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+}
+
+.an-row {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px 9px;
+    border: 1px solid transparent;
+    border-radius: 9px;
+    background: #f8faf5;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.an-row:active {
+    background: #eff5e7;
+}
+
+/* 倒计时中的那一条：整格（经络 + 穴位 + 秒数）一起框住 */
+.an-row.is-timing {
+    border-color: #7aa84f;
+    background: #eef5e4;
+    box-shadow: 0 0 0 2px rgba(122, 168, 79, 0.16);
+}
+
+.an-row.is-timing .an-time {
+    color: #3d6b1f;
+    font-weight: 600;
+}
+
+/* 穴位与秒数同一行，经络独占一行——两列窄格也不会挤 */
+.an-line {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.an-channel {
+    color: #5c6852;
+    font-size: 11.5px;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.an-point {
+    color: #2f3d26;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+}
+
+.an-time {
+    flex: none;
+    margin-left: auto;
+    color: #3e5a2a;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.3px;
+}
+
+.an-time small {
+    margin-left: 1px;
+    color: #8a967e;
+    font-size: 10px;
+}
+
+.an-empty {
+    padding: 18px 6px;
+    color: #8a967e;
+    font-size: 12.5px;
+    line-height: 1.8;
+    text-align: center;
+}
+
+.an-link {
+    color: #4b7a2a;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* ---------- 我的 ---------- */
+.me-field {
+    display: flex;
+    align-items: center;
+    margin-top: 12px;
+}
+
+.me-field:first-of-type {
+    margin-top: 14px;
+}
+
+.me-label {
+    flex: none;
+    width: 62px;
+    color: #4a5a3c;
+    font-size: 13px;
+}
+
+.me-seg {
+    display: flex;
+    flex: 1;
+    gap: 6px;
+}
+
+.me-seg button {
+    flex: 1;
+    padding: 7px 0;
+    border: 1px solid #dfe8d4;
+    border-radius: 9px;
+    background: #fbfdf9;
+    color: #5c6852;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.me-seg button.is-on {
+    border-color: #9abf72;
+    background: #eef5e4;
+    color: #3e5a2a;
+    font-weight: 600;
+}
+
+.me-date {
+    flex: 1;
+    box-sizing: border-box;
+    padding: 7px 10px;
+    border: 1px solid #dfe8d4;
+    border-radius: 9px;
+    background: #fbfdf9;
+    color: #2f3d26;
+    font-family: inherit;
+    font-size: 13px;
+}
+
+.pulse-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.pulse-cell {
+    padding: 10px 10px 9px;
+    border-radius: 10px;
+    background: #f8faf5;
+}
+
+.pulse-cell-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.pulse-name {
+    color: #3d5528;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.pulse-opts {
+    display: flex;
+    gap: 5px;
+}
+
+.pulse-opts button {
+    flex: 1;
+    padding: 5px 0;
+    border: 1px solid #dfe8d4;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #7c8a6e;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.pulse-opts button.is-on {
+    border-color: #9abf72;
+    background: #eef5e4;
+    color: #3e5a2a;
+    font-weight: 600;
+}
+
+.pulse-opts button[data-v="弱"].is-on {
+    border-color: #e0b489;
+    background: #fdf2e6;
+    color: #8a5a26;
+}
+
+.pulse-opts button[data-v="强"].is-on {
+    border-color: #e0a89a;
+    background: #fbeeea;
+    color: #8a3a2a;
+}
+
 .modal-open { overflow: hidden; }
 :focus-visible { outline: 2px solid #7c9a58; outline-offset: 2px; }
 
@@ -926,7 +1137,7 @@ img { max-width: 100%; }
     <div id="resultBox"></div>
 
     <div class="disclaimer">
-        <span>以上建议由 AI 根据图片生成，仅供日常养生参考，不替代专业医疗诊断，也不构成处方。汤药部分尤其需要中医师面诊后确定，请勿自行照方抓药服用。身体不适请及时就医。</span>
+        <span>以上建议由 AI 根据舌象生成，仅供日常养生参考，不替代专业医疗诊断，也不构成处方。汤药部分尤其需要中医师面诊后确定，请勿自行照方抓药服用。身体不适请及时就医。</span>
     </div>
 
     </div><!-- /paneTongue -->
@@ -985,10 +1196,73 @@ img { max-width: 100%; }
         </div>
 
         <div class="disclaimer">
-            <span>本页穴位依传统择时取穴法（子午流注类）按日干支推算，仅供学习与日常养生参考，不构成医疗方案。针刺属医疗操作，须由执业医师施行，请勿自行下针；艾灸注意保持距离、及时排烟，避免烫伤，孕妇、皮肤破损及发热时慎用。干支以当地 0 点为界切换，与黄历「日」一致。</span>
+            <span>仅供学习与日常养生参考，不构成医疗方案。针刺属医疗操作，须由执业医师施行，请勿自行下针；艾灸注意保持距离、及时排烟，避免烫伤，孕妇、皮肤破损及发热时慎用。</span>
         </div>
 
     </div><!-- /paneAcu -->
+
+    <!-- 第三页：按跷（每日按摩的经络、穴位、时长） -->
+    <div class="tab-pane hidden" id="paneAnqiao">
+
+        <div class="acu-bar">
+            <button class="acu-nav" id="anPrev" type="button" aria-label="前一天">‹</button>
+            <div class="acu-bar-main">
+                <span class="acu-date" id="anDate">—</span>
+                <span class="acu-gz" id="anGz">—</span>
+            </div>
+            <button class="acu-nav" id="anNext" type="button" aria-label="后一天">›</button>
+        </div>
+        <span class="acu-reset hidden" id="anReset" role="button" tabindex="0">回到今天</span>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="card-title">今日按跷</span>
+                <span class="card-hint" id="anTotalMeta">—</span>
+            </div>
+            <div id="anList"></div>
+        </div>
+
+        <div class="disclaimer">
+            <span>操作以酸胀舒适为度，皮肤破损处避开。经络调理参考舌象分析结果及生日、脉象，只作参考，不构成医疗方案；身体不适请及时就医。</span>
+        </div>
+
+    </div><!-- /paneAnqiao -->
+
+    <!-- 第四页：我的（性别 / 出生 / 脉象） -->
+    <div class="tab-pane hidden" id="paneMe">
+
+        <div class="card">
+            <div class="card-head">
+                <span class="card-title">基本资料</span>
+                <span class="card-hint">存于本机</span>
+            </div>
+
+            <div class="me-field">
+                <span class="me-label">性别</span>
+                <div class="me-seg" id="meSex">
+                    <button type="button" id="meSexMale" data-v="男">男</button>
+                    <button type="button" id="meSexFemale" data-v="女">女</button>
+                </div>
+            </div>
+
+            <div class="me-field">
+                <span class="me-label">出生</span>
+                <input class="me-date" id="meBirth" type="date" />
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <span class="card-title">脉象</span>
+            </div>
+            <div class="pulse-grid" id="pulseGrid"></div>
+        </div>
+
+        <div class="disclaimer">
+            <span>以上资料只保存在本机 localStorage，不上传任何服务器；清除浏览器数据会一并清除。脉象选择仅为日常调理参考，不作诊断依据。</span>
+        </div>
+
+    </div><!-- /paneMe -->
 </div>
 
 <!-- 底部 tab -->
@@ -1006,6 +1280,21 @@ img { max-width: 100%; }
             <circle cx="17.3" cy="6.9" r="2.3"></circle>
         </svg>
         <span class="tab-label">针灸</span>
+    </button>
+    <button class="tab-item" id="tabAnqiao" type="button" role="tab" aria-selected="false" aria-controls="paneAnqiao">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8.2 11.4V6.4a1.4 1.4 0 0 1 2.8 0v4.6"></path>
+            <path d="M11 10.8V5.6a1.4 1.4 0 0 1 2.8 0v5.2"></path>
+            <path d="M13.8 11V7a1.4 1.4 0 0 1 2.8 0v6.2a5.8 5.8 0 0 1-5.8 5.8h-.5a4.8 4.8 0 0 1-3.5-1.5l-2.4-2.4a1.4 1.4 0 0 1 2-2l1.6 1.6"></path>
+        </svg>
+        <span class="tab-label">按跷</span>
+    </button>
+    <button class="tab-item" id="tabMe" type="button" role="tab" aria-selected="false" aria-controls="paneMe">
+        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.2"></circle>
+            <path d="M5.6 19.3c0-3.4 2.9-5.5 6.4-5.5s6.4 2.1 6.4 5.5"></path>
+        </svg>
+        <span class="tab-label">我的</span>
     </button>
 </nav>
 
@@ -1027,64 +1316,220 @@ img { max-width: 100%; }
 <div class="toast" id="toast"></div>
 
 <script>
+/* ==SHECORE-START== */
+// 针灸取穴与模型配置的内核（Rust 编译的 wasm）。由 wasm-core/tools/pack.js 生成，勿手改。
+// 数据段加密存放，敏感项需握手解锁；加载前校验指纹，字节被替换则拒绝启用。
 (function () {
     'use strict';
 
+    var B64 = [
+    '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'
+    ].join('');
+
+    var H1 = 0xdfac4975, H2 = 0x74ab2a43, MAGIC = 89792;
+
+    function dec64(s) {
+        var AL = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+        var map = {}, i;
+        for (i = 0; i < 64; i += 1) { map[AL.charAt(i)] = i; }
+        var out = new Uint8Array(((s.length * 3) >> 2) + 3);
+        var o = 0, buf = 0, bits = 0;
+        for (i = 0; i < s.length; i += 1) {
+            var c = s.charAt(i);
+            if (c === '=') { break; }
+            var v = map[c];
+            if (v === undefined) { continue; }
+            buf = (buf << 6) | v;
+            bits += 6;
+            if (bits >= 8) {
+                bits -= 8;
+                out[o] = (buf >> bits) & 0xff;
+                o += 1;
+            }
+        }
+        return out.subarray(0, o);
+    }
+
+    function fnv(bytes, basis) {
+        var h = basis >>> 0, i;
+        for (i = 0; i < bytes.length; i += 1) {
+            h ^= bytes[i];
+            h = Math.imul(h, 0x01000193) >>> 0;
+        }
+        return h >>> 0;
+    }
+
+    var core = null;
+    try {
+        var bytes = dec64(B64);
+        if (fnv(bytes, 0x811c9dc5) === H1 && fnv(bytes, 0x01000193) === H2) {
+            // 同步实例化：体量只有几十 KB，省掉首屏的 loading 态
+            var inst = new WebAssembly.Instance(new WebAssembly.Module(bytes), {});
+            var ex = inst.exports;
+            if (ex._v() !== MAGIC) { throw new Error('bad magic'); }
+            // 原生函数被代理/替换时 toString 不再是 [native code]
+            if (String(ex._g).indexOf('native code') < 0) { throw new Error('hooked'); }
+
+            var mem = new Uint8Array(ex.memory.buffer);
+            var ptr = ex._p();
+            var dec = new TextDecoder('utf-8');
+            var TK = 0;
+
+            // 握手令牌由版本号与常量混合，缺这一步 _k 一律返回空
+            TK = ((0x51ed2701 ^ Math.imul(0x9e3779b1, 0xa5a55a5a)) ^ (MAGIC * 16)) >>> 0;
+            ex._u(TK);
+
+            function take(len) {
+                if (!len) { return ''; }
+                mem = new Uint8Array(ex.memory.buffer);
+                return dec.decode(mem.subarray(ptr, ptr + len));
+            }
+
+            function cfg(slot) {
+                return take(ex._k(slot));
+            }
+
+            core = {
+                ok: true,
+                ganzhiIndex: function (date) {
+                    var idx = ex._g(date.getFullYear(), date.getMonth() + 1, date.getDate());
+                    return idx < 0 ? -1 : idx;
+                },
+                acuAt: function (idx) {
+                    var f = take(ex._a(idx >>> 0)).split('\u001f');
+                    var at = function (i) { return f[i] || '—'; };
+                    return {
+                        ganzhi: at(0),
+                        hand: { meridian: at(1), point: at(2), side: at(3) },
+                        foot: { meridian: at(4), point: at(5), side: at(6) },
+                        moxa: { name: at(7), location: at(8) }
+                    };
+                },
+                rows: function () {
+                    var out = [], lines = take(ex._r()).split('\u001e'), i;
+                    for (i = 0; i < lines.length; i += 1) {
+                        if (lines[i]) { out.push(lines[i].split('\u001f')); }
+                    }
+                    return out;
+                },
+                moxaPoints: function () {
+                    var out = [], lines = take(ex._m()).split('\u001e'), i;
+                    for (i = 0; i < lines.length; i += 1) {
+                        if (!lines[i]) { continue; }
+                        var f = lines[i].split('\u001f');
+                        out.push({ name: f[0], location: f[1] });
+                    }
+                    return out;
+                },
+                apiBase: function () { return cfg(94); },
+                apiKey: function () { return cfg(95); },
+                model: function () { return cfg(96); },
+                systemPrompt: function () { return cfg(97); },
+                userPrompt: function () { return cfg(98); },
+                decoctionDisclaimer: function () { return cfg(99); }
+            };
+        }
+    } catch (e) {
+        core = null;
+    }
+
+    Object.defineProperty(window, 'SheCore', {
+        value: core,
+        writable: false,
+        configurable: false,
+        enumerable: false
+    });
+})();
+/* ==SHECORE-END== */
+(function () {
+    'use strict';
+
+    // ---------------- 内核 ----------------
+    // 干支取穴、穴位表、模型配置与提示词都在 window.SheCore（Rust → wasm）里，
+    // 页面不再保留明文；内核校验不过时为 null，页面会退化成提示不可用。
+    var CORE = window.SheCore;
+
+    function coreReady() {
+        return !!(CORE && CORE.ok);
+    }
+
     // ---------------- 配置 ----------------
-    // 注意：页面在浏览器里运行，密钥对任何访问者可见。
-    // 公开传播前建议换成服务端中转，或为该 key 设置额度上限。
+    // 只有图片压缩参数留在页面；接口、密钥、模型、提示词全部来自内核。
     var CFG = {
-        API_BASE: 'https://apihub.agnes-ai.com/v1',
-        API_KEY: 'sk-yPG75t1c1jEZWpVhivSG0gx7BiWaQbKouWj8EGcrUODf7C19',
-        MODEL: 'agnes-3.0-flash',
         MAX_DIMENSION: 1280,
         JPEG_QUALITY: 0.85
     };
 
-    // ---------------- 提示词 ----------------
-    // 输出格式刻意设计成「分节 + 键值行」，便于边接收边解析成结构化卡片。
-    var SYSTEM_PROMPT = [
-        '你是一位精通中医舌诊的资深养生顾问。',
-        '请仔细观察用户上传的舌象照片，从舌色、舌形、舌苔、舌下络脉以及照片能反映的整体状态进行辨证分析。',
-        '汤药部分只给出与该证型对应的经典方剂作为参考，不要编造偏方，不要夸大疗效，不要建议超量或长期服用。',
-        '必须严格按下面的固定格式输出，不要输出格式之外的任何说明文字，不要使用 markdown 代码块，不要使用 ** 等符号：',
-        '',
-        '【舌象特征】',
-        '舌色：',
-        '舌形：',
-        '舌苔：',
-        '舌下络脉：（若照片不可见则写「不可见」）',
-        '',
-        '【证型】',
-        '（一句话给出中医证型，例如 脾虚湿盛）',
-        '',
-        '【辨证分析】',
-        '（150 到 250 字的辨证说明，解释判断依据以及可能对应的身体状态）',
-        '',
-        '【经络穴位】',
-        '经络：（1 到 3 条相关经络，用「、」分隔）',
-        '穴位：（每条单独一行，格式为 穴位名｜定位｜操作方法｜建议时长，共 3 到 4 条，每行都以「穴位：」开头）',
-        '注意：（艾灸或按揉的注意事项，一句话）',
-        '',
-        '【食疗调理】',
-        '宜食：（4 到 6 种，用「、」分隔）',
-        '忌口：（3 到 5 种，用「、」分隔）',
-        '药膳：（一个药膳名称）',
-        '食材：（食材，用「、」分隔）',
-        '做法：（两三句话说明做法）',
-        '',
-        '【汤药调理】',
-        '方名：（一个与该证型对应的经典方剂名称，如 参苓白术散、四君子汤）',
-        '组成：（4 到 8 味药，每味写成「药名+剂量」，如 党参12g、白术10g，用「、」分隔）',
-        '用法：（煎服方法与服用时间，一句话，如 水煎服，每日一剂，早晚温服）',
-        '注意：（禁忌人群与需及时就医的情形，一到两句）',
-        '免责：（一句话说明该方仅供参考、须经中医师面诊确认后调整，不可自行长期服用）'
-    ].join('\n');
+    function cfgApiBase() {
+        return coreReady() ? CORE.apiBase() : '';
+    }
 
-    var USER_PROMPT = '请分析这张舌象照片，并给出经络穴位调理、食疗调理与汤药调理建议。';
+    function cfgModel() {
+        return coreReady() ? CORE.model() : '';
+    }
 
-    var DEFAULT_DECOCTION_DISCLAIMER =
-        '本方由 AI 依舌象推断，仅供参考。中医讲辨证论治，同一证型在不同人身上用药与剂量都需调整，请经中医师面诊后开具处方。';
+    // 提示词每次用时现取，不在全局变量里长驻
+    function systemPrompt() {
+        return coreReady() ? CORE.systemPrompt() : '';
+    }
+
+    function userPrompt() {
+        return coreReady() ? CORE.userPrompt() : '';
+    }
+
+    function decoctionDisclaimer() {
+        return coreReady() ? CORE.decoctionDisclaimer() : '';
+    }
+
+    // 提示词不再写在这里：system / user / 汤药免责都在内核里（见 systemPrompt() 等）。
 
     // ---------------- 增量解析 ----------------
     var FEATURE_KEYS = ['舌色', '舌形', '舌苔', '舌下络脉'];
@@ -1464,7 +1909,7 @@ img { max-width: 100%; }
             html += '<span class="decoction-warning-title">请勿自行照方抓药</span>';
             html +=
                 '<span class="decoction-warning-text">' +
-                esc(d.disclaimer || DEFAULT_DECOCTION_DISCLAIMER) +
+                esc(d.disclaimer || decoctionDisclaimer()) +
                 '</span>';
             html += '</div></div>';
         }
@@ -1591,13 +2036,13 @@ img { max-width: 100%; }
         state.controller = controller;
 
         var payload = {
-            model: CFG.MODEL,
+            model: cfgModel(),
             messages: [
-                { role: 'system', content: SYSTEM_PROMPT },
+                { role: 'system', content: systemPrompt() },
                 {
                     role: 'user',
                     content: [
-                        { type: 'text', text: USER_PROMPT },
+                        { type: 'text', text: userPrompt() },
                         { type: 'image_url', image_url: { url: 'data:' + state.mime + ';base64,' + state.base64 } }
                     ]
                 }
@@ -1663,10 +2108,10 @@ img { max-width: 100%; }
 
         (async function run() {
             try {
-                var resp = await fetch(CFG.API_BASE.replace(/\/+$/, '') + '/chat/completions', {
+                var resp = await fetch(cfgApiBase().replace(/\/+$/, '') + '/chat/completions', {
                     method: 'POST',
                     headers: {
-                        Authorization: 'Bearer ' + CFG.API_KEY,
+                        Authorization: 'Bearer ' + (coreReady() ? CORE.apiKey() : ''),
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(payload),
@@ -1880,100 +2325,23 @@ img { max-width: 100%; }
     }
 
     // ---------------- 针灸：按当日干支取穴 ----------------
-    // 日干支以 1949-10-01（甲子日）为锚点推算：(JDN + 49) % 60 即六十甲子序号。
-    // 已与黄历核对：2026-10-30 为 丁丑日。
-    var GAN = '甲乙丙丁戊己庚辛壬癸';
-    var ZHI = '子丑寅卯辰巳午未申酉戌亥';
-    var WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    // 六十甲子表、经络周期、左右分侧、灸穴映射全部由内核计算，页面只剩渲染。
+    // 独立出来一份全表仅用于自检与调试，正常渲染走 acuModel。
+    var ACU_ROWS = coreReady() ? CORE.rows() : [];
+    var MOXA_POINTS = coreReady() ? CORE.moxaPoints() : [];
 
-    // 干支 | 手经 | 手穴 | 手侧 | 足经 | 足穴 | 足侧
-    var ACU_ROWS = [
-        ['甲子', '手少阴心经', '灵道', '左', '足阳明胃经', '丰隆', '右'],
-        ['乙丑', '手太阴肺经', '太渊', '右', '足太阳膀胱经', '委中', '左'],
-        ['丙寅', '手少阳三焦经', '阳池', '右', '足厥阴肝经', '蠡沟', '左'],
-        ['丁卯', '手阳明大肠经', '合谷', '左', '足少阴肾经', '阴谷', '右'],
-        ['戊辰', '手太阳小肠经', '支正', '右', '足太阴脾经', '太白', '左'],
-        ['己巳', '手厥阴心包经', '劳宫', '右', '足少阳胆经', '光明', '左'],
-        ['庚午', '手少阴心经', '少海', '右', '足阳明胃经', '内庭', '左'],
-        ['辛未', '手太阴肺经', '经渠', '左', '足太阳膀胱经', '飞扬', '右'],
-        ['壬申', '手少阳三焦经', '支沟', '左', '足厥阴肝经', '行间', '右'],
-        ['癸酉', '手阳明大肠经', '三间', '右', '足少阴肾经', '照海', '左'],
-        ['甲戌', '手太阳小肠经', '后溪', '左', '足太阴脾经', '血海', '右'],
-        ['乙亥', '手厥阴心包经', '大陵', '左', '足少阳胆经', '阳陵泉', '右'],
-        ['丙子', '手少阴心经', '通里', '左', '足阳明胃经', '上巨虚', '右'],
-        ['丁丑', '手太阴肺经', '尺泽', '右', '足太阳膀胱经', '京骨', '左'],
-        ['戊寅', '手少阳三焦经', '外关', '右', '足厥阴肝经', '太冲', '左'],
-        ['己卯', '手阳明大肠经', '阳溪', '左', '足少阴肾经', '然谷', '右'],
-        ['庚辰', '手太阳小肠经', '腕骨', '右', '足太阴脾经', '阴陵泉', '左'],
-        ['辛巳', '手厥阴心包经', '间使', '右', '足少阳胆经', '足临泣', '左'],
-        ['壬午', '手少阴心经', '少府', '右', '足阳明胃经', '解溪', '左'],
-        ['癸未', '手太阴肺经', '列缺', '左', '足太阳膀胱经', '申脉', '右'],
-        ['甲申', '手少阳三焦经', '中渚', '左', '足厥阴肝经', '中封', '右'],
-        ['乙酉', '手阳明大肠经', '曲池', '右', '足少阴肾经', '太溪', '左'],
-        ['丙戌', '手太阳小肠经', '养老', '左', '足太阴脾经', '公孙', '右'],
-        ['丁亥', '手厥阴心包经', '曲泽', '左', '足少阳胆经', '悬钟', '右'],
-        ['戊子', '手少阴心经', '神门', '左', '足阳明胃经', '足三里', '右'],
-        ['己丑', '手太阴肺经', '鱼际', '右', '足太阳膀胱经', '昆仑', '左'],
-        ['庚寅', '手少阳三焦经', '液门', '右', '足厥阴肝经', '曲泉', '左'],
-        ['辛卯', '手阳明大肠经', '手三里', '左', '足少阴肾经', '复溜', '右'],
-        ['壬辰', '手太阳小肠经', '阳谷', '右', '足太阴脾经', '三阴交', '左'],
-        ['癸巳', '手厥阴心包经', '内关', '右', '足少阳胆经', '丘墟', '左'],
-        ['甲午', '手少阴心经', '灵道', '右', '足阳明胃经', '丰隆', '左'],
-        ['乙未', '手太阴肺经', '太渊', '左', '足太阳膀胱经', '委中', '右'],
-        ['丙申', '手少阳三焦经', '阳池', '左', '足厥阴肝经', '蠡沟', '右'],
-        ['丁酉', '手阳明大肠经', '合谷', '右', '足少阴肾经', '阴谷', '左'],
-        ['戊戌', '手太阳小肠经', '支正', '左', '足太阴脾经', '太白', '右'],
-        ['己亥', '手厥阴心包经', '劳宫', '左', '足少阳胆经', '光明', '右'],
-        ['庚子', '手少阴心经', '少海', '左', '足阳明胃经', '内庭', '右'],
-        ['辛丑', '手太阴肺经', '经渠', '右', '足太阳膀胱经', '飞扬', '左'],
-        ['壬寅', '手少阳三焦经', '支沟', '右', '足厥阴肝经', '行间', '左'],
-        ['癸卯', '手阳明大肠经', '三间', '左', '足少阴肾经', '照海', '右'],
-        ['甲辰', '手太阳小肠经', '后溪', '右', '足太阴脾经', '血海', '左'],
-        ['乙巳', '手厥阴心包经', '大陵', '右', '足少阳胆经', '阳陵泉', '左'],
-        ['丙午', '手少阴心经', '通里', '右', '足阳明胃经', '上巨虚', '左'],
-        ['丁未', '手太阴肺经', '尺泽', '左', '足太阳膀胱经', '京骨', '右'],
-        ['戊申', '手少阳三焦经', '外关', '左', '足厥阴肝经', '太冲', '右'],
-        ['己酉', '手阳明大肠经', '阳溪', '右', '足少阴肾经', '然谷', '左'],
-        ['庚戌', '手太阳小肠经', '腕骨', '左', '足太阴脾经', '阴陵泉', '右'],
-        ['辛亥', '手厥阴心包经', '间使', '左', '足少阳胆经', '足临泣', '右'],
-        ['壬子', '手少阴心经', '少府', '左', '足阳明胃经', '解溪', '右'],
-        ['癸丑', '手太阴肺经', '列缺', '右', '足太阳膀胱经', '申脉', '左'],
-        ['甲寅', '手少阳三焦经', '中渚', '右', '足厥阴肝经', '中封', '左'],
-        ['乙卯', '手阳明大肠经', '曲池', '左', '足少阴肾经', '太溪', '右'],
-        ['丙辰', '手太阳小肠经', '养老', '右', '足太阴脾经', '公孙', '左'],
-        ['丁巳', '手厥阴心包经', '曲泽', '右', '足少阳胆经', '悬钟', '左'],
-        ['戊午', '手少阴心经', '神门', '右', '足阳明胃经', '足三里', '左'],
-        ['己未', '手太阴肺经', '鱼际', '左', '足太阳膀胱经', '昆仑', '右'],
-        ['庚申', '手少阳三焦经', '液门', '左', '足厥阴肝经', '曲泉', '右'],
-        ['辛酉', '手阳明大肠经', '手三里', '右', '足少阴肾经', '复溜', '左'],
-        ['壬戌', '手太阳小肠经', '阳谷', '左', '足太阴脾经', '三阴交', '右'],
-        ['癸亥', '手厥阴心包经', '内关', '左', '足少阳胆经', '丘墟', '右']
-    ];
-
-    // 灸穴按地支取，六日一轮
-    var MOXA_POINTS = [
-        { name: '中极', location: '任脉 · 脐下四寸' },
-        { name: '关元', location: '任脉 · 脐下三寸' },
-        { name: '气海', location: '任脉 · 脐下一点五寸' },
-        { name: '神阙', location: '任脉 · 脐中' },
-        { name: '中脘', location: '任脉 · 脐上四寸' },
-        { name: '膻中', location: '任脉 · 两乳头连线中点' }
-    ];
-
-    // 公历日 → 六十甲子序号（0 = 甲子）
+    // 公历日 → 六十甲子序号（0 = 甲子），由 wasm 按 JDN 推算
     function ganzhiIndex(date) {
-        var y = date.getFullYear();
-        var m = date.getMonth() + 1;
-        var d = date.getDate();
-        var a = Math.floor((14 - m) / 12);
-        var yy = y + 4800 - a;
-        var mm = m + 12 * a - 3;
-        var jdn = d + Math.floor((153 * mm + 2) / 5) + 365 * yy +
-            Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
-        return (jdn + 49) % 60;
+        if (!coreReady()) {
+            return -1;
+        }
+        return CORE.ganzhiIndex(date);
     }
 
     var acuState = { offset: 0 };
+
+    // 星期标签只在页面拼日期用，不涉及取穴逻辑
+    var WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 
     // offset 以「天」为单位，0 表示今天
     function acuModel(offset) {
@@ -1981,16 +2349,27 @@ img { max-width: 100%; }
         day.setHours(0, 0, 0, 0);
         day.setDate(day.getDate() + offset);
         var idx = ganzhiIndex(day);
-        var row = ACU_ROWS[idx];
-        var zhi = idx % 12;
+        var point = idx >= 0 && coreReady() ? CORE.acuAt(idx) : null;
+        var dateLabel = (day.getMonth() + 1) + '月' + day.getDate() + '日 ' + WEEK[day.getDay()];
+        if (!point) {
+            return {
+                offset: offset,
+                isToday: offset === 0,
+                dateLabel: dateLabel,
+                ganzhi: '—',
+                hand: { meridian: '—', point: '—', side: '—' },
+                foot: { meridian: '—', point: '—', side: '—' },
+                moxa: { name: '—', location: '—' }
+            };
+        }
         return {
             offset: offset,
             isToday: offset === 0,
-            dateLabel: (day.getMonth() + 1) + '月' + day.getDate() + '日 ' + WEEK[day.getDay()],
-            ganzhi: GAN[idx % 10] + ZHI[zhi],
-            hand: { meridian: row[1], point: row[2], side: row[3] },
-            foot: { meridian: row[4], point: row[5], side: row[6] },
-            moxa: MOXA_POINTS[zhi % 6]
+            dateLabel: dateLabel,
+            ganzhi: point.ganzhi,
+            hand: point.hand,
+            foot: point.foot,
+            moxa: point.moxa
         };
     }
 
@@ -2010,24 +2389,881 @@ img { max-width: 100%; }
         return m;
     }
 
+    // ================= 按跷：五运六气 + 天干合化取穴 =================
+    // 三条独立链路：时长走五运六气（叠加十二经 plus），穴位走当日天干合化的五行，
+    // 左右侧走当日干支阴阳（阳日顺、阴日逆）。入口参数是「生日 + 十二经 plus」。
+    // 这段刻意保持明文，方便自己调权重，也方便测试直接加载。
+
+    var AN_CHANNELS = [
+        '手太阴肺经', '手阳明大肠经', '足阳明胃经', '足太阴脾经',
+        '手少阴心经', '手太阳小肠经', '足太阳膀胱经', '足少阴肾经',
+        '手厥阴心包经', '手少阳三焦经', '足少阳胆经', '足厥阴肝经'
+    ];
+
+    // 阴阳只用于定按跷的左右侧（见 anSideOf），补泻一律按该经对应的那一部脉判
+    var AN_YIN = ['手太阴肺经', '足太阴脾经', '手少阴心经', '足少阴肾经', '手厥阴心包经', '足厥阴肝经'];
+    var AN_YANG = ['手阳明大肠经', '足阳明胃经', '手太阳小肠经', '足太阳膀胱经', '手少阳三焦经', '足少阳胆经'];
+
+    // 经络乘数：阳经与脾胃偏重，心包与肝偏轻
+    var AN_MULT = {
+        '手太阴肺经': 4, '手阳明大肠经': 10, '足阳明胃经': 10, '足太阴脾经': 4,
+        '手少阴心经': 3, '手太阳小肠经': 7, '足太阳膀胱经': 7, '足少阴肾经': 3,
+        '手厥阴心包经': 2, '手少阳三焦经': 5, '足少阳胆经': 5, '足厥阴肝经': 2
+    };
+
+    // 一天按跷总时长（秒）
+    var AN_TOTAL_SECONDS = 1800;
+
+    // 天干五合化气：甲己化土、乙庚化金、丙辛化水、丁壬化木、戊癸化火
+    var AN_HE_HUA = {
+        甲: '土', 己: '土',
+        乙: '金', 庚: '金',
+        丙: '水', 辛: '水',
+        丁: '木', 壬: '木',
+        戊: '火', 癸: '火'
+    };
+
+    // 按跷取穴表：十二经 × 五行。当日天干合化出哪一行，十二经就各取该行的穴位。
+    // 与旧版「60 日干支块」的区别：穴位只由当日天干决定，与旬、与经序都无关；
+    // 顺逆由干支阴阳定（阳顺阴逆，见 anDailyPlan），左右由顺逆定（见 anSideOf）。
+    // 列的排列沿用「火 土 金 水 木」，与运气七项里的五行名对得上，不另设编号。
+    // 行的顺序就是页面列表顺序，沿用旧版 胆→肝→肺→…（现在只是稳定排序，无推算含义）。
+    var AN_POINTS = [
+        { channel: '足少阳胆经', points: { 火: '光明', 土: '阳陵泉', 金: '足临泣', 水: '悬钟', 木: '丘墟' } },
+        { channel: '足厥阴肝经', points: { 火: '行间', 土: '太冲', 金: '中封', 水: '曲泉', 木: '蠡沟' } },
+        { channel: '手太阴肺经', points: { 火: '鱼际', 土: '太渊', 金: '经渠', 水: '尺泽', 木: '列缺' } },
+        { channel: '手阳明大肠经', points: { 火: '阳溪', 土: '曲池', 金: '手三里', 水: '合谷', 木: '三间' } },
+        { channel: '足阳明胃经', points: { 火: '解溪', 土: '足三里', 金: '丰隆', 水: '内庭', 木: '上巨虚' } },
+        { channel: '足太阴脾经', points: { 火: '三阴交', 土: '太白', 金: '血海', 水: '阴陵泉', 木: '公孙' } },
+        { channel: '手少阴心经', points: { 火: '少府', 土: '神门', 金: '灵道', 水: '少海', 木: '通里' } },
+        { channel: '手太阳小肠经', points: { 火: '阳谷', 土: '支正', 金: '后溪', 水: '腕骨', 木: '养老' } },
+        { channel: '足太阳膀胱经', points: { 火: '昆仑', 土: '委中', 金: '飞扬', 水: '京骨', 木: '申脉' } },
+        { channel: '足少阴肾经', points: { 火: '然谷', 土: '太溪', 金: '复溜', 水: '阴谷', 木: '照海' } },
+        { channel: '手厥阴心包经', points: { 火: '劳宫', 土: '大陵', 金: '间使', 水: '曲泽', 木: '内关' } },
+        { channel: '手少阳三焦经', points: { 火: '支沟', 土: '外关', 金: '中渚', 水: '液门', 木: '阳池' } }
+    ];
+
+    var AN_GAN = '甲乙丙丁戊己庚辛壬癸';
+    var AN_ZHI = '子丑寅卯辰巳午未申酉戌亥';
+
+    // 六气推演顺序（客气按此环转，主气也按这个本序排六步）
+    var AN_QI = ['厥阴风木', '少阴君火', '太阴湿土', '少阳相火', '阳明燥金', '太阳寒水'];
+
+    var AN_LIU_QI = {
+        '厥阴风木': ['足厥阴肝经', '手厥阴心包经'],
+        '少阴君火': ['手少阴心经', '足少阴肾经'],
+        '太阴湿土': ['足太阴脾经', '手太阴肺经'],
+        '少阳相火': ['手少阳三焦经', '足少阳胆经'],
+        '阳明燥金': ['手阳明大肠经', '足阳明胃经'],
+        '太阳寒水': ['足太阳膀胱经', '手太阳小肠经']
+    };
+
+    // 五运不及 / 太过 → 该多按的经络。**这两张表列的是「宜调之经」，不是病位**，两表来路不同：
+    //   不及 = 取「生我」之经（母），依《难经·六十九难》「虚者补其母」，属隔一层的补法；
+    //          经典所述病位在本脏（为所不胜者所乘，并连累子脏），若改按病位取经应列本脏
+    //          （如木运不及 → 肝胆），此处保留补母取穴。
+    //   太过 = 取「我克」之经（所胜），依《素问·气交变大论》「岁木太过…脾土受邪」，
+    //          即本气偏盛、克伐所胜，所胜受邪而虚，故补受克者。
+    // 土、水两运各带两条经（心与心包、小肠与三焦），为同气相求的扩展。
+    var AN_YUN_BU_JI = {
+        '木运不及': [['足少阴肾经', '足太阳膀胱经']],
+        '火运不及': [['足厥阴肝经', '足少阳胆经']],
+        '土运不及': [['手少阴心经', '手太阳小肠经'],['手厥阴心包经', '手少阳三焦经']],
+        '金运不及': [['足太阴脾经', '足阳明胃经']],
+        '水运不及': [['手太阴肺经', '手阳明大肠经']]
+    };
+
+    // 太过与上面「不及取母」不是同一种五行关系，勿混：这里是所胜受邪
+    var AN_YUN_TAI_GUO = {
+        '木运太过': [['足太阴脾经', '足阳明胃经']],
+        '火运太过': [['手太阴肺经', '手阳明大肠经']],
+        '土运太过': [['足少阴肾经', '足太阳膀胱经']],
+        '金运太过': [['足厥阴肝经', '足少阳胆经']],
+        '水运太过': [['手少阴心经', '手太阳小肠经'],['手厥阴心包经', '手少阳三焦经']]
+    };
+
+    // 地支 → [司天, 在泉]
+    var AN_SI_TIAN = {
+        子: ['少阴君火', '阳明燥金'], 午: ['少阴君火', '阳明燥金'],
+        丑: ['太阴湿土', '太阳寒水'], 未: ['太阴湿土', '太阳寒水'],
+        寅: ['少阳相火', '厥阴风木'], 申: ['少阳相火', '厥阴风木'],
+        卯: ['阳明燥金', '少阴君火'], 酉: ['阳明燥金', '少阴君火'],
+        辰: ['太阳寒水', '太阴湿土'], 戌: ['太阳寒水', '太阴湿土'],
+        巳: ['厥阴风木', '少阳相火'], 亥: ['厥阴风木', '少阳相火']
+    };
+
+    // 天干 → 岁运
+    var AN_SUI_YUN = {
+        甲: '土运太过', 乙: '金运不及', 丙: '水运太过', 丁: '木运不及', 戊: '火运太过',
+        己: '土运不及', 庚: '金运太过', 辛: '水运不及', 壬: '木运太过', 癸: '火运不及'
+    };
+
+    // 天干 → 五音（用于推主运起点）
+    var AN_WU_YIN = {
+        甲: '宫', 己: '宫', 乙: '商', 庚: '商', 丙: '羽',
+        辛: '羽', 丁: '角', 壬: '角', 戊: '徵', 癸: '徵'
+    };
+
+    // 儒略日与干支：与针灸页同一套换算法，0 = 甲子
+    function anJdn(y, m, d) {
+        var a = Math.floor((14 - m) / 12);
+        var yy = y + 4800 - a;
+        var mm = m + 12 * a - 3;
+        return d + Math.floor((153 * mm + 2) / 5) + 365 * yy +
+            Math.floor(yy / 4) - Math.floor(yy / 100) + Math.floor(yy / 400) - 32045;
+    }
+
+    function anGanzhiIndex(date) {
+        var jdn = anJdn(date.getFullYear(), date.getMonth() + 1, date.getDate());
+        return ((jdn + 49) % 60 + 60) % 60;
+    }
+
+    function anRiGanzhi(date) {
+        var i = anGanzhiIndex(date);
+        return AN_GAN.charAt(i % 10) + AN_ZHI.charAt(i % 12);
+    }
+
+    // 当日天干合化出的五行（土/金/水/木/火），当日十二经共用同一列穴位
+    function anHeHuaOf(date) {
+        return AN_HE_HUA[anRiGanzhi(date).charAt(0)] || '';
+    }
+
+    function anYearGanzhi(year) {
+        var offset = (year - 1984) % 60;
+        if (offset < 0) {
+            offset += 60;
+        }
+        return AN_GAN.charAt(offset % 10) + AN_ZHI.charAt(offset % 12);
+    }
+
+    function anSuiYun(year) {
+        return AN_SUI_YUN[anYearGanzhi(year).charAt(0)] || '未知';
+    }
+
+    function anSiTianZaiQuan(year) {
+        var zhi = anYearGanzhi(year).charAt(1);
+        return AN_SI_TIAN[zhi] || ['未知', '未知'];
+    }
+
+    // 客气：三之气即司天，终之气即在泉，其余顺推
+    function anKeQi(year) {
+        var st = anSiTianZaiQuan(year);
+        var index = AN_QI.indexOf(st[0]);
+        var out = [];
+        for (var i = 0; i < 6; i += 1) {
+            if (i === 2) {
+                out.push(st[0]);
+            } else if (i === 5) {
+                out.push(st[1]);
+            } else {
+                out.push(AN_QI[(index - 2 + i + 6) % 6]);
+            }
+        }
+        return out;
+    }
+
+    function anZhuYun(year) {
+        var gan = anYearGanzhi(year).charAt(0);
+        var isTai = anSuiYun(year).indexOf('太过') >= 0;
+        var wuXing = ['木', '火', '土', '金', '水'];
+        var wuYin = ['角', '徵', '宫', '商', '羽'];
+        var idx = wuYin.indexOf(AN_WU_YIN[gan]);
+        if (idx < 0) {
+            idx = 0;
+        }
+        // 从当前音回到角（木），途中每次交替太过/不及
+        var woodTai = isTai;
+        for (var i = 0; i < idx; i += 1) {
+            woodTai = !woodTai;
+        }
+        var list = [];
+        var t = woodTai;
+        for (var j = 0; j < 5; j += 1) {
+            list.push(wuXing[j] + '运' + (t ? '太过' : '不及'));
+            t = !t;
+        }
+        return list;
+    }
+
+    function anKeYun(year) {
+        var sui = anSuiYun(year);
+        var wuXing = ['木', '火', '土', '金', '水'];
+        var start = wuXing.indexOf(sui.charAt(0));
+        if (start < 0) {
+            start = 0;
+        }
+        var list = [];
+        var t = sui.indexOf('太过') >= 0;
+        for (var i = 0; i < 5; i += 1) {
+            list.push(wuXing[(start + i) % 5] + '运' + (t ? '太过' : '不及'));
+            t = !t;
+        }
+        return list;
+    }
+
+    // 五运五步的日期界（大寒起算）
+    function anYunIndex(date) {
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        if ((m === 1 && d >= 20) || m === 2 || m === 3 || (m === 4 && d <= 3)) {
+            return 0;
+        }
+        if ((m === 4 && d >= 4) || m === 5 || (m === 6 && d <= 16)) {
+            return 1;
+        }
+        if ((m === 6 && d >= 17) || m === 7 || (m === 8 && d <= 30)) {
+            return 2;
+        }
+        if ((m === 8 && d >= 31) || m === 9 || m === 10 || (m === 11 && d <= 12)) {
+            return 3;
+        }
+        return 4;
+    }
+
+    // 六气六步的日期界
+    function anQiIndex(date) {
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        if ((m === 1 && d >= 21) || m === 2 || (m === 3 && d <= 21)) {
+            return 0;
+        }
+        if ((m === 3 && d > 21) || m === 4 || (m === 5 && d <= 21)) {
+            return 1;
+        }
+        if ((m === 5 && d > 21) || m === 6 || (m === 7 && d <= 22)) {
+            return 2;
+        }
+        if ((m === 7 && d > 22) || m === 8 || (m === 9 && d <= 22)) {
+            return 3;
+        }
+        if ((m === 9 && d > 22) || m === 10 || (m === 11 && d <= 22)) {
+            return 4;
+        }
+        return 5;
+    }
+
+    // 当天所处运气状态与各项权重
+    function anCalc(date) {
+        var year = date.getFullYear();
+        var m = date.getMonth() + 1;
+        var d = date.getDate();
+        var zhuYun = anZhuYun(year);
+        var keYun = anKeYun(year);
+        var keQi = anKeQi(year);
+        var yunIdx = anYunIndex(date);
+        var qiIdx = anQiIndex(date);
+        var st = anSiTianZaiQuan(year);
+        var firstHalf = (m === 1 && d >= 20) || (m >= 2 && m <= 6) || (m === 7 && d <= 22);
+
+        // 岁半之前重司天，岁半之后重在泉
+        var pct = firstHalf
+            ? { sui: 30, siTian: 35, zaiQuan: 5, zhuQi: 5, keQi: 10, zhuYun: 5, keYun: 10 }
+            : { sui: 30, siTian: 10, zaiQuan: 30, zhuQi: 5, keQi: 10, zhuYun: 5, keYun: 10 };
+
+        return {
+            year: year,
+            firstHalf: firstHalf,
+            suiYun: anSuiYun(year),
+            siTian: st[0],
+            zaiQuan: st[1],
+            currentZhuYun: zhuYun[yunIdx],
+            currentKeYun: keYun[yunIdx],
+            currentZhuQi: AN_QI[qiIdx],
+            currentKeQi: keQi[qiIdx],
+            pct: pct
+        };
+    }
+
+    // 把当天的运气换算成「每条经络受到多少影响」
+    function anInfluence(r) {
+        var map = {};
+
+        function add(channel, weight) {
+            map[channel] = (map[channel] || 0) + weight;
+        }
+
+        function addGroup(channels, weight) {
+            for (var i = 0; i < channels.length; i += 1) {
+                add(channels[i], weight);
+            }
+        }
+
+        // 岁运、主运、客运：按运的太过/不及查表
+        var yunPairs = [
+            [r.suiYun, r.pct.sui],
+            [r.currentZhuYun, r.pct.zhuYun],
+            [r.currentKeYun, r.pct.keYun]
+        ];
+        for (var i = 0; i < yunPairs.length; i += 1) {
+            var yun = yunPairs[i][0];
+            var weight = yunPairs[i][1];
+            var groups = null;
+            if (yun.indexOf('不及') >= 0) {
+                groups = AN_YUN_BU_JI[yun];        // 取母（虚则补其母）
+            } else if (yun.indexOf('太过') >= 0) {
+                groups = AN_YUN_TAI_GUO[yun];      // 取所胜（受克而虚者）
+            }
+            if (!groups) {
+                continue;
+            }
+            for (var g = 0; g < groups.length; g += 1) {
+                addGroup(groups[g], weight);
+            }
+        }
+
+        // 司天、在泉、主气、客气：按六气查表
+        var qiPairs = [
+            [r.siTian, r.pct.siTian],
+            [r.zaiQuan, r.pct.zaiQuan],
+            [r.currentZhuQi, r.pct.zhuQi],
+            [r.currentKeQi, r.pct.keQi]
+        ];
+        for (var j = 0; j < qiPairs.length; j += 1) {
+            var name = qiPairs[j][0].replace(/\((司天|在泉)\)/g, '');
+            var list = AN_LIU_QI[name];
+            if (!list) {
+                continue;
+            }
+            addGroup(list, qiPairs[j][1]);
+        }
+
+        return map;
+    }
+
+    function anAge(birth, date) {
+        var age = date.getFullYear() - birth.getFullYear();
+        var m = date.getMonth() - birth.getMonth();
+        if (m < 0 || (m === 0 && date.getDate() < birth.getDate())) {
+            age -= 1;
+        }
+        return age;
+    }
+
+    // 先天（出生时运气）与当下（今日运气）按年龄配比，再叠加本人 plus 补偿
+    function anMerge(birthInf, birthRatio, curInf, curRatio, plusMap) {
+        var merged = {};
+
+        function addFrom(src, ratio) {
+            for (var k in src) {
+                if (!Object.prototype.hasOwnProperty.call(src, k)) {
+                    continue;
+                }
+                var mult = AN_MULT[k] || 1;
+                merged[k] = (merged[k] || 0) + src[k] * ratio * mult;
+            }
+        }
+
+        addFrom(birthInf, birthRatio);
+        addFrom(curInf, curRatio);
+
+        for (var c in plusMap) {
+            if (!Object.prototype.hasOwnProperty.call(plusMap, c)) {
+                continue;
+            }
+            // plus 的乘子固定为 10：单次命中 = PLUS_UNIT × 10 分，与运气七项同处 0~100 的量纲
+            merged[c] = (merged[c] || 0) + plusMap[c] * 10 * (AN_MULT[c] || 1);
+        }
+
+        return merged;
+    }
+
+    // 顺：阳经右、阴经左；逆：阳经左、阴经右
+    function anSideOf(channel, direction) {
+        var isYin = AN_YIN.indexOf(channel) >= 0;
+        if (direction === '顺') {
+            return isYin ? '左侧' : '右侧';
+        }
+        return isYin ? '右侧' : '左侧';
+    }
+
+    function anPointLabel(side, point) {
+        if (side === '左侧') {
+            return '左' + point;
+        }
+        if (side === '右侧') {
+            return '右' + point;
+        }
+        if (side === '双侧') {
+            return '双' + point;
+        }
+        return point;
+    }
+
+    // 给定日期、生日与 plus，算出当天要按的 12 条
+    function anDailyPlan(date, birth, plusMap) {
+        var idx = anGanzhiIndex(date);
+        // 干支阴阳：六十甲子里阳干只配阳支（甲子、丙寅…），所以序号奇偶就是当日的阴/阳。阳日顺、阴日逆。
+        var direction = (idx % 2 === 0) ? '顺' : '逆';
+        // 当日天干合化的五行，定十二经各取哪一列穴位；十二经同日同列
+        var gan = AN_GAN.charAt(idx % 10);
+        var element = AN_HE_HUA[gan] || '';
+
+        var curInf = anInfluence(anCalc(date));
+        var merged;
+        if (birth) {
+            var birthInf = anInfluence(anCalc(birth));
+            var age = anAge(birth, date);
+            var birthRatio = age <= 16 ? 0.7 : (age <= 50 ? 0.4 : 0.6);
+            var curRatio = age <= 16 ? 0.3 : (age <= 50 ? 0.6 : 0.4);
+            merged = anMerge(birthInf, birthRatio, curInf, curRatio, plusMap);
+        } else {
+            // 没填出生日期：只按当日运气分（页面会先用空状态引导去填，这里保底不报错）
+            merged = anMerge({}, 0, curInf, 1, plusMap);
+        }
+        var total = 0;
+        for (var k in merged) {
+            if (Object.prototype.hasOwnProperty.call(merged, k)) {
+                total += merged[k];
+            }
+        }
+
+        var plan = [];
+        for (var i = 0; i < AN_POINTS.length; i += 1) {
+            var row = AN_POINTS[i];
+            var channel = row.channel;
+            var percent = total > 0 ? (merged[channel] || 0) / total : 0;
+            var seconds = Math.floor(AN_TOTAL_SECONDS * percent);
+            if (seconds <= 0) {
+                continue;
+            }
+            plan.push({
+                channel: channel,
+                ganzhi: gan + AN_ZHI.charAt(idx % 12),
+                element: element,
+                direction: direction,
+                point: anPointLabel(anSideOf(channel, direction), row.points[element]),
+                seconds: seconds,
+                percent: percent
+            });
+        }
+        return plan;
+    }
+
+    // ---------------- 按跷：我的档案 ----------------
+
+    var ME_KEY = 'she.me.v1';
+
+    // 只留六部名；脉位对应的经络在下方 PULSE_CHANNELS 里，页面上不再逐个列出来
+    var PULSE_PARTS = [
+        { key: '左寸' },
+        { key: '右寸' },
+        { key: '左关' },
+        { key: '右关' },
+        { key: '左尺' },
+        { key: '右尺' }
+    ];
+
+    // 每一部脉对应的经络：该部偏弱就给自己这几条经加 plus
+    var PULSE_CHANNELS = {
+        '左寸': ['手少阴心经', '手厥阴心包经', '手太阴肺经'],
+        '左关': ['足厥阴肝经', '足太阴脾经'],
+        '左尺': ['足少阴肾经'],
+        '右寸': ['手阳明大肠经', '手太阳小肠经', '手少阳三焦经'],
+        '右关': ['足少阳胆经', '足阳明胃经'],
+        '右尺': ['足太阳膀胱经']
+    };
+
+    // 对侧：左右互换，寸关尺不变。偏强则给对侧那几经加 plus
+    var PULSE_OPPOSITE = {
+        '左寸': '右寸', '右寸': '左寸',
+        '左关': '右关', '右关': '左关',
+        '左尺': '右尺', '右尺': '左尺'
+    };
+
+    var meState = {
+        sex: '',
+        birth: '',
+        pulse: {}
+    };
+
+    (function initPulseDefault() {
+        for (var i = 0; i < PULSE_PARTS.length; i += 1) {
+            meState.pulse[PULSE_PARTS[i].key] = '平';
+        }
+    })();
+
+    function meLoad() {
+        try {
+            var raw = window.localStorage.getItem(ME_KEY);
+            if (!raw) {
+                return;
+            }
+            var saved = JSON.parse(raw);
+            if (!saved) {
+                return;
+            }
+            if (saved.sex === '男' || saved.sex === '女') {
+                meState.sex = saved.sex;
+            }
+            if (typeof saved.birth === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(saved.birth)) {
+                meState.birth = saved.birth;
+            }
+            for (var i = 0; i < PULSE_PARTS.length; i += 1) {
+                var k = PULSE_PARTS[i].key;
+                var v = saved.pulse && saved.pulse[k];
+                if (v === '强' || v === '弱' || v === '平') {
+                    meState.pulse[k] = v;
+                }
+            }
+        } catch (e) {
+            // localStorage 不可用（无痕模式 / file:// 限制）时就用默认值
+        }
+    }
+
+    function meSave() {
+        try {
+            window.localStorage.setItem(ME_KEY, JSON.stringify(meState));
+        } catch (e) {
+            // 存不了也不影响当次使用
+        }
+    }
+
+    function meBirthDate() {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(meState.birth)) {
+            return null;
+        }
+        var parts = meState.birth.split('-');
+        var d = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+        if (isNaN(d.getTime())) {
+            return null;
+        }
+        return d;
+    }
+
+    // 舌象分析里「经络」给的可能是全名，也可能是简称，这里统一成全名
+    var AN_ALIAS = [
+        ['心包', '手厥阴心包经'],
+        ['大肠', '手阳明大肠经'],
+        ['小肠', '手太阳小肠经'],
+        ['三焦', '手少阳三焦经'],
+        ['膀胱', '足太阳膀胱经'],
+        ['肺', '手太阴肺经'],
+        ['脾', '足太阴脾经'],
+        ['心', '手少阴心经'],
+        ['肾', '足少阴肾经'],
+        ['肝', '足厥阴肝经'],
+        ['胆', '足少阳胆经'],
+        ['胃', '足阳明胃经']
+    ];
+
+    function anNormalize(name) {
+        if (AN_CHANNELS.indexOf(name) >= 0) {
+            return name;
+        }
+        for (var i = 0; i < AN_ALIAS.length; i += 1) {
+            if (name.indexOf(AN_ALIAS[i][0]) >= 0) {
+                return AN_ALIAS[i][1];
+            }
+        }
+        return '';
+    }
+
+    // plus 单位：某经每命中一次加多少。真正的权重是 PLUS_UNIT × 10（乘子见 anMerge），
+    // 取 1 时单次命中 = 10 分，与「客气」一项等值；运气七项合计 100 分，个体补偿不宜与之同量级。
+    var PLUS_UNIT = 1;
+
+    // 十二经 plus：舌象经络里出现一次 +PLUS_UNIT；
+    // 六部脉偏弱 → 该部自己的经络 +PLUS_UNIT；偏强 → 对侧那一部的经络 +PLUS_UNIT；平则不加
+    function anPlusMap() {
+        var plus = {};
+        var i;
+        var c;
+        for (i = 0; i < AN_CHANNELS.length; i += 1) {
+            plus[AN_CHANNELS[i]] = 0;
+        }
+
+        var result = (typeof state !== 'undefined' && state.result) ? state.result : null;
+        var meridians = (result && result.meridians) ? result.meridians : [];
+        for (i = 0; i < meridians.length; i += 1) {
+            c = anNormalize(String(meridians[i]));
+            if (c) {
+                plus[c] += PLUS_UNIT;
+            }
+        }
+
+        for (var p = 0; p < PULSE_PARTS.length; p += 1) {
+            var part = PULSE_PARTS[p].key;
+            var v = meState.pulse[part];
+            var target = null;
+            if (v === '弱') {
+                target = part;
+            } else if (v === '强') {
+                target = PULSE_OPPOSITE[part];
+            }
+            if (!target) {
+                continue;
+            }
+            var list = PULSE_CHANNELS[target];
+            for (i = 0; i < list.length; i += 1) {
+                plus[list[i]] += PLUS_UNIT;
+            }
+        }
+
+        return plus;
+    }
+
+    // ---------------- 按跷：渲染 ----------------
+
+    var anState = { offset: 0, plan: [] };
+
+    // 倒计时：点一条 → 按该条的秒数倒数，整格（经络 + 穴位 + 秒数）一起框住；
+    // 归零播一声提示音，并自动接下一条。再点同一条 = 停。
+    var AN_DING_SRC = '1.mp3';
+    var anTimer = { idx: -1, left: 0, total: 0, channel: '', tid: 0, dings: 0 };
+    var anDingEl = null;
+
+    function anFmtSeconds(sec) {
+        if (sec < 60) {
+            return sec + '″';
+        }
+        var m = Math.floor(sec / 60);
+        var s = sec % 60;
+        return s ? m + '′' + s + '″' : m + '′';
+    }
+
+    // 提示音元素懒建：不给 Audio 的环境（测试、旧浏览器）就当没有声音
+    function anDingSource() {
+        if (!anDingEl) {
+            try {
+                anDingEl = (typeof Audio === 'function') ? new Audio(AN_DING_SRC) : null;
+            } catch (e) {
+                anDingEl = null;
+            }
+        }
+        return anDingEl;
+    }
+
+    // prime = 借用户这次点击先把音频解开：定时器触发的 play 会被自动播放策略拦掉，
+    // 尤其 iOS 上必须由用户手势先播过一次，所以这里静音播一下就停。
+    function anDing(prime) {
+        anTimer.dings += prime ? 0 : 1;
+        var el = anDingSource();
+        if (!el) {
+            return;
+        }
+        try {
+            el.currentTime = 0;
+            if (prime) {
+                el.muted = true;
+            }
+            var p = el.play();
+            if (p && p.then) {
+                p.then(function () {
+                    if (prime) {
+                        el.pause();
+                        el.currentTime = 0;
+                        el.muted = false;
+                    }
+                })['catch'](function () {
+                    el.muted = false;
+                });
+            } else if (prime) {
+                el.pause();
+                el.currentTime = 0;
+                el.muted = false;
+            }
+        } catch (e) {
+            // 播放失败不影响倒计时
+        }
+    }
+
+    function anClearTimer() {
+        if (anTimer.tid) {
+            clearTimeout(anTimer.tid);
+            anTimer.tid = 0;
+        }
+    }
+
+    function anResetTimer() {
+        anClearTimer();
+        anTimer.idx = -1;
+        anTimer.left = 0;
+        anTimer.total = 0;
+        anTimer.channel = '';
+    }
+
+    function anArmTimer() {
+        anTimer.tid = setTimeout(anTick, 1000);
+    }
+
+    function anTick() {
+        if (anTimer.idx < 0) {
+            return;
+        }
+        if (anTimer.left > 1) {
+            anTimer.left -= 1;
+            anArmTimer();
+            renderAnqiao();
+            return;
+        }
+        // 这一条走完：响一声，接着下一条
+        anTimer.left = 0;
+        anDing(false);
+        var next = anTimer.idx + 1;
+        if (next < anState.plan.length) {
+            anStartCountdown(next, false);
+            return;
+        }
+        anResetTimer();
+        renderAnqiao();
+    }
+
+    // prime 只在用户点击时为 true（自动接下一条不必再解锁，且会把刚响的提示音打断）
+    function anStartCountdown(i, prime) {
+        var row = anState.plan[i];
+        if (!row) {
+            return false;
+        }
+        anClearTimer();
+        if (prime) {
+            anDing(true);
+        }
+        anTimer.idx = i;
+        anTimer.left = row.seconds;
+        anTimer.total = row.seconds;
+        anTimer.channel = row.channel;
+        anArmTimer();
+        renderAnqiao();
+        return true;
+    }
+
+    function anStopCountdown() {
+        anResetTimer();
+        renderAnqiao();
+    }
+
+    function anToggleCountdown(i) {
+        if (anTimer.idx === i) {
+            anStopCountdown();
+            return;
+        }
+        anStartCountdown(i, true);
+    }
+
+    function renderAnqiao() {
+        var date = new Date();
+        date.setHours(0, 0, 0, 0);
+        date.setDate(date.getDate() + anState.offset);
+
+        $('anDate').textContent = (date.getMonth() + 1) + '月' + date.getDate() + '日 ' + WEEK[date.getDay()];
+        $('anGz').textContent = anRiGanzhi(date) + '日';
+        setHidden($('anReset'), anState.offset === 0);
+
+        var box = $('anList');
+        var birth = meBirthDate();
+        if (!birth) {
+            anResetTimer();
+            anState.plan = [];
+            box.innerHTML = '<div class="an-empty">还没填出生日期。<br>先到「我的」填好，才能按五运六气推算每天该按多久。<br>' +
+                '<span class="an-link" id="anGoMe">去填写 →</span></div>';
+            $('anTotalMeta').textContent = '待填写';
+            var go = $('anGoMe');
+            if (go) {
+                go.addEventListener('click', function () {
+                    switchTab('me');
+                });
+            }
+            return;
+        }
+
+        var plus = anPlusMap();
+        var plan = anDailyPlan(date, birth, plus);
+        anState.plan = plan;
+        if (!plan.length) {
+            anResetTimer();
+            box.innerHTML = '<div class="an-empty">这一天没有需要按的经络。</div>';
+            $('anTotalMeta').textContent = '0 条';
+            return;
+        }
+
+        // 列表变了（翻日、改档案、换舌象结果）：正在倒的那条对不上就停掉，别接着报错的秒数
+        if (anTimer.idx >= 0) {
+            var cur = plan[anTimer.idx];
+            if (!cur || cur.channel !== anTimer.channel || cur.seconds !== anTimer.total) {
+                anResetTimer();
+            }
+        }
+
+        var html = '<div class="an-grid">';
+        var sum = 0;
+        for (var i = 0; i < plan.length; i += 1) {
+            var p = plan[i];
+            sum += p.seconds;
+            var timing = anTimer.idx === i;
+            html += '<div class="an-row' + (timing ? ' is-timing' : '') + '" data-i="' + i + '">' +
+                '<span class="an-channel">' + esc(p.channel) + '</span>' +
+                '<span class="an-line">' +
+                '<span class="an-point">' + esc(p.point) + '</span>' +
+                '<span class="an-time">' + (timing ? anTimer.left : p.seconds) + '<small>″</small></span>' +
+                '</span>' +
+                '</div>';
+        }
+        html += '</div>';
+        box.innerHTML = html;
+
+        $('anTotalMeta').textContent = plan.length + ' 条 · ' + Math.round(sum / 60) + ' 分钟';
+    }
+
+    // ---------------- 我的：渲染 ----------------
+
+    function renderPulseGrid() {
+        var html = '';
+        var opts = ['强', '平', '弱'];
+        for (var i = 0; i < PULSE_PARTS.length; i += 1) {
+            var part = PULSE_PARTS[i];
+            html += '<div class="pulse-cell">' +
+                '<div class="pulse-cell-head">' +
+                '<span class="pulse-name">' + part.key + '</span>' +
+                '</div>' +
+                '<div class="pulse-opts">';
+            for (var j = 0; j < opts.length; j += 1) {
+                var on = meState.pulse[part.key] === opts[j];
+                html += '<button type="button" class="' + (on ? 'is-on' : '') + '"' +
+                    ' data-part="' + part.key + '" data-v="' + opts[j] + '">' + opts[j] + '</button>';
+            }
+            html += '</div></div>';
+        }
+        $('pulseGrid').innerHTML = html;
+    }
+
+    function renderMe() {
+        renderPulseGrid();
+
+        $('meSexMale').classList.toggle('is-on', meState.sex === '男');
+        $('meSexFemale').classList.toggle('is-on', meState.sex === '女');
+
+        if ($('meBirth').value !== meState.birth) {
+            $('meBirth').value = meState.birth;
+        }
+
+    }
+
     var activeTab = 'tongue';
-    var scrollMemo = { tongue: 0, acu: 0 };
+    var scrollMemo = { tongue: 0, acu: 0, anqiao: 0, me: 0 };
+
+    var TAB_IDS = { tongue: 'tabTongue', acu: 'tabAcu', anqiao: 'tabAnqiao', me: 'tabMe' };
+    var PANE_IDS = { tongue: 'paneTongue', acu: 'paneAcu', anqiao: 'paneAnqiao', me: 'paneMe' };
+    var TAB_ORDER = ['tongue', 'acu', 'anqiao', 'me'];
 
     function switchTab(name) {
-        if (name === activeTab) {
+        if (!PANE_IDS[name] || name === activeTab) {
             return;
         }
         scrollMemo[activeTab] = window.pageYOffset || window.scrollY || 0;
         activeTab = name;
-        var onAcu = name === 'acu';
-        setHidden($('paneTongue'), onAcu);
-        setHidden($('paneAcu'), !onAcu);
-        $('tabTongue').classList.toggle('is-active', !onAcu);
-        $('tabAcu').classList.toggle('is-active', onAcu);
-        $('tabTongue').setAttribute('aria-selected', onAcu ? 'false' : 'true');
-        $('tabAcu').setAttribute('aria-selected', onAcu ? 'true' : 'false');
-        if (onAcu) {
+        for (var i = 0; i < TAB_ORDER.length; i += 1) {
+            var key = TAB_ORDER[i];
+            var on = key === name;
+            setHidden($(PANE_IDS[key]), !on);
+            $(TAB_IDS[key]).classList.toggle('is-active', on);
+            $(TAB_IDS[key]).setAttribute('aria-selected', on ? 'true' : 'false');
+        }
+        if (name === 'acu') {
             renderAcu();
+        } else if (name === 'anqiao') {
+            renderAnqiao();
+        } else if (name === 'me') {
+            renderMe();
         }
         if (typeof window.scrollTo === 'function') {
             window.scrollTo(0, scrollMemo[name] || 0);
@@ -2043,6 +3279,12 @@ img { max-width: 100%; }
         });
         $('tabAcu').addEventListener('click', function () {
             switchTab('acu');
+        });
+        $('tabAnqiao').addEventListener('click', function () {
+            switchTab('anqiao');
+        });
+        $('tabMe').addEventListener('click', function () {
+            switchTab('me');
         });
         $('acuPrev').addEventListener('click', function () {
             acuState.offset -= 1;
@@ -2064,8 +3306,77 @@ img { max-width: 100%; }
             }
         });
         renderAcu();
+
+        // ---- 按跷页：前后翻日 ----
+        // 点某条开始倒计时（挂在容器上代理，重画列表不必重新绑定）
+        $('anList').addEventListener('click', function (e) {
+            var el = e && e.target;
+            while (el && el !== this) {
+                if (el.getAttribute && el.getAttribute('data-i') !== null) {
+                    anToggleCountdown(Number(el.getAttribute('data-i')));
+                    return;
+                }
+                el = el.parentNode;
+            }
+        });
+        $('anPrev').addEventListener('click', function () {
+            anState.offset -= 1;
+            anStopCountdown();
+        });
+        $('anNext').addEventListener('click', function () {
+            anState.offset += 1;
+            anStopCountdown();
+        });
+        $('anReset').addEventListener('click', function () {
+            anState.offset = 0;
+            anStopCountdown();
+        });
+        $('anReset').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                anState.offset = 0;
+                anStopCountdown();
+            }
+        });
+        renderAnqiao();
+
+        // ---- 我的：性别 / 生日 / 脉象 ----
+        $('meSexMale').addEventListener('click', function () {
+            meState.sex = '男';
+            meSave();
+            renderMe();
+        });
+        $('meSexFemale').addEventListener('click', function () {
+            meState.sex = '女';
+            meSave();
+            renderMe();
+        });
+        $('meBirth').addEventListener('change', function () {
+            var v = $('meBirth').value || '';
+            meState.birth = /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : '';
+            meSave();
+            renderMe();
+            renderAnqiao();
+        });
+        $('pulseGrid').addEventListener('click', function (e) {
+            var t = e && e.target;
+            if (!t || !t.getAttribute) {
+                return;
+            }
+            var part = t.getAttribute('data-part');
+            var v = t.getAttribute('data-v');
+            if (!part || !v || meState.pulse[part] === undefined) {
+                return;
+            }
+            meState.pulse[part] = v;
+            meSave();
+            renderMe();
+            renderAnqiao();
+        });
+        renderMe();
     }
 
+    meLoad();
     bind();
     updateChrome();
     initTabs();
@@ -2088,6 +3399,39 @@ img { max-width: 100%; }
         acuRows: ACU_ROWS,
         moxaPoints: MOXA_POINTS,
         state: acuState
+    };
+
+    // 按跷：算法与档案都开放出来，方便测试与自查
+    window.AnApp = {
+        channels: AN_CHANNELS,
+        points: AN_POINTS,
+        wuChang: AN_POINTS,   // 旧名保留，外部调用还在用
+        heHua: AN_HE_HUA,
+        heHuaOf: anHeHuaOf,
+        totalSeconds: AN_TOTAL_SECONDS,
+        plusUnit: PLUS_UNIT,
+        state: anState,
+        me: meState,
+        ganzhiIndex: anGanzhiIndex,
+        riGanzhi: anRiGanzhi,
+        calc: anCalc,
+        influence: anInfluence,
+        plan: anDailyPlan,
+        timer: anTimer,
+        startCountdown: anStartCountdown,
+        stopCountdown: anStopCountdown,
+        toggleCountdown: anToggleCountdown,
+        tick: anTick,
+        dingSrc: AN_DING_SRC,
+        plusMap: anPlusMap,
+        pulseChannels: PULSE_CHANNELS,
+        pulseOpposite: PULSE_OPPOSITE,
+        normalize: anNormalize,
+        render: renderAnqiao,
+        renderMe: renderMe,
+        switchTab: switchTab,
+        load: meLoad,
+        save: meSave
     };
 })();
 </script>
