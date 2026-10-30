@@ -997,6 +997,16 @@ img { max-width: 100%; }
     background: #eff5e7;
 }
 
+/* 轮到下一条但还没开始：淡框提示「点它才开始」，不自动走秒 */
+.an-row.is-next {
+    border-color: #9abf72;
+    background: #f1f7e7;
+}
+
+.an-row.is-next .an-time {
+    color: #6b7f57;
+}
+
 /* 倒计时中的那一条：整格（经络 + 穴位 + 秒数）一起框住 */
 .an-row.is-timing {
     border-color: #7aa84f;
@@ -3137,9 +3147,9 @@ img { max-width: 100%; }
     var anState = { offset: 0, plan: [] };
 
     // 倒计时：点一条 → 按该条的秒数倒数，整格（经络 + 穴位 + 秒数）一起框住；
-    // 归零播一声提示音，并自动接下一条。再点同一条 = 停。
+    // 归零播一声提示音，把下一条标成「待开始」但不自动走，等用户点。再点同一条 = 停。
     var AN_DING_SRC = '1.mp3';
-    var anTimer = { idx: -1, left: 0, total: 0, channel: '', tid: 0, dings: 0 };
+    var anTimer = { idx: -1, left: 0, total: 0, channel: '', sel: -1, selChannel: '', tid: 0, dings: 0 };
     var anDingEl = null;
 
     function anFmtSeconds(sec) {
@@ -3210,6 +3220,8 @@ img { max-width: 100%; }
         anTimer.left = 0;
         anTimer.total = 0;
         anTimer.channel = '';
+        anTimer.sel = -1;
+        anTimer.selChannel = '';
     }
 
     function anArmTimer() {
@@ -3226,19 +3238,39 @@ img { max-width: 100%; }
             renderAnqiao();
             return;
         }
-        // 这一条走完：响一声，接着下一条
+        // 这一条走完：响一声，把下一条标出来等点击，不自动开始
         anTimer.left = 0;
         anDing(false);
         var next = anTimer.idx + 1;
+        anClearTimer();
+        anTimer.idx = -1;
+        anTimer.total = 0;
+        anTimer.channel = '';
         if (next < anState.plan.length) {
-            anStartCountdown(next, false);
+            anTimer.sel = next;
+            anTimer.selChannel = anState.plan[next].channel;
+            renderAnqiao();
+            anScrollRow(next);
             return;
         }
-        anResetTimer();
+        anTimer.sel = -1;
+        anTimer.selChannel = '';
         renderAnqiao();
     }
 
-    // prime 只在用户点击时为 true（自动接下一条不必再解锁，且会把刚响的提示音打断）
+    // 标出来的那一条可能被挡在屏幕外，滚到视野内（只滚最近距离，不抢用户的滚动位置）
+    function anScrollRow(i) {
+        var box = $('anList');
+        if (!box || !box.querySelector) {
+            return;
+        }
+        var node = box.querySelector('.an-row[data-i="' + i + '"]');
+        if (node && node.scrollIntoView) {
+            node.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        }
+    }
+
+    // prime 只在用户点击时为 true（自动标下一条时不再解锁，且会把刚响的提示音打断）
     function anStartCountdown(i, prime) {
         var row = anState.plan[i];
         if (!row) {
@@ -3252,6 +3284,8 @@ img { max-width: 100%; }
         anTimer.left = row.seconds;
         anTimer.total = row.seconds;
         anTimer.channel = row.channel;
+        anTimer.sel = -1;
+        anTimer.selChannel = '';
         anArmTimer();
         renderAnqiao();
         return true;
@@ -3323,6 +3357,14 @@ img { max-width: 100%; }
                 anResetTimer();
             }
         }
+        // 待开始的那条同理：内容变了就不该继续标着它
+        if (anTimer.sel >= 0) {
+            var sel = plan[anTimer.sel];
+            if (!sel || sel.channel !== anTimer.selChannel) {
+                anTimer.sel = -1;
+                anTimer.selChannel = '';
+            }
+        }
 
         var html = '<div class="an-grid">';
         var sum = 0;
@@ -3330,7 +3372,9 @@ img { max-width: 100%; }
             var p = plan[i];
             sum += p.seconds;
             var timing = anTimer.idx === i;
-            html += '<div class="an-row' + (timing ? ' is-timing' : '') + '" data-i="' + i + '">' +
+            var waiting = !timing && anTimer.sel === i;
+            var cls = timing ? ' is-timing' : (waiting ? ' is-next' : '');
+            html += '<div class="an-row' + cls + '" data-i="' + i + '">' +
                 '<span class="an-channel">' + esc(p.channel) + '</span>' +
                 '<span class="an-line">' +
                 '<span class="an-point">' + esc(p.point) + '</span>' +
