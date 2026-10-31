@@ -1831,6 +1831,12 @@ img { max-width: 100%; }
                 anTotalSeconds: function () { return ex._as(); },
                 ganChars: function () { return cfg(84); },
                 zhiChars: function () { return cfg(85); },
+                // 星期标签：槽位 86..92（周日..周六），页面拼日期用
+                weekChars: function () {
+                    var out = [], w;
+                    for (w = 0; w < 7; w += 1) { out.push(cfg(86 + w)); }
+                    return out;
+                },
                 // 十天干合化出的五行，下标与天干同序
                 anHeHua: function () { return take(ex._ax()).split('\u001f'); },
                 // 取穴表：12 行 { channel, points: { 火, 土, 金, 水, 木 } }
@@ -3237,8 +3243,8 @@ img { max-width: 100%; }
 
     var acuState = { offset: 0 };
 
-    // 星期标签只在页面拼日期用，不涉及取穴逻辑
-    var WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    // 星期标签也来自内核（槽位 86..92），页面不再留一份；内核没起来就空着
+    var WEEK = coreReady() ? CORE.weekChars() : [];
 
     // offset 以「天」为单位，0 表示今天
     function acuModel(offset) {
@@ -3247,7 +3253,7 @@ img { max-width: 100%; }
         day.setDate(day.getDate() + offset);
         var idx = ganzhiIndex(day);
         var point = idx >= 0 && coreReady() ? CORE.acuAt(idx) : null;
-        var dateLabel = (day.getMonth() + 1) + '月' + day.getDate() + '日 ' + WEEK[day.getDay()];
+        var dateLabel = (day.getMonth() + 1) + '月' + day.getDate() + '日 ' + (WEEK[day.getDay()] || '');
         if (!point) {
             return {
                 offset: offset,
@@ -3861,7 +3867,7 @@ img { max-width: 100%; }
         date.setHours(0, 0, 0, 0);
         date.setDate(date.getDate() + anState.offset);
 
-        $('anDate').textContent = (date.getMonth() + 1) + '月' + date.getDate() + '日 ' + WEEK[date.getDay()];
+        $('anDate').textContent = (date.getMonth() + 1) + '月' + date.getDate() + '日 ' + (WEEK[date.getDay()] || '');
         $('anGz').textContent = anRiGanzhi(date) + '日';
         setHidden($('anReset'), anState.offset === 0);
 
