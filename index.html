@@ -3012,19 +3012,8 @@ img { max-width: 100%; }
         return true;
     }
 
-    // 每分钟问一次内核：过期的码在内核里被清掉，这里同步删掉本地那份
-    function keySweep() {
-        if (!keyState.on || !coreReady()) {
-            return;
-        }
-        CORE.keySweep(new Date());
-        if (CORE.keyAuthed()) {
-            return;
-        }
-        var year = keyState.year;
-        keyClear();
-        keyGate('授权码已过期（' + year + ' 年 12 月 31 日截止），请换一份新的');
-    }
+    // 定时清扫已关闭：不再有每分钟跑一次的 keySweep，本地存下的码不会被自动删掉。
+    // 内核里的清扫入口（wasm _kq / CORE.keySweep）还在，但页面不再调它。
 
     function keyBoot() {
         if (!coreReady()) {
@@ -4118,11 +4107,8 @@ img { max-width: 100%; }
     updateChrome();
     initTabs();
     keyBoot();
-    // 定时清扫已停用：不再每分钟问一次内核，也不自动删掉本地保存的授权码。
-    // 内核里的 keySweep 与这里的 keySweep 都原样留着，需要恢复时把这段解开即可。
-    // if (typeof setInterval === 'function') {
-    //     setInterval(keySweep, 60000);
-    // }
+    // 这里的 60 秒清扫定时器已移除：避免内核撤销授权后顺手把本地存的码删掉。
+    // 需要恢复时，照 git 历史把那个每分钟调用一次 keySweep 的定时器接回来即可
 
     // 暴露给外部调用（也便于自动化测试）
     window.TongueApp = {
@@ -4152,7 +4138,8 @@ img { max-width: 100%; }
             gate: keyGate,
             submit: keySubmit,
             boot: keyBoot,
-            sweep: keySweep,
+            // 定时清扫已停用，这里留个空壳，外部调用不会报错也不会删本地码
+            sweep: function () { return 0; },
             apply: keyApplyProfile,
             state: keyState,
             reason: KEY_REASON
