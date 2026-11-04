@@ -4118,10 +4118,11 @@ img { max-width: 100%; }
     updateChrome();
     initTabs();
     keyBoot();
-    // 内核里那张授权码登记表每分钟清一次；跨年以后这里会把过期的码删掉并要求重新输入
-    if (typeof setInterval === 'function') {
-        setInterval(keySweep, 60000);
-    }
+    // 定时清扫已停用：不再每分钟问一次内核，也不自动删掉本地保存的授权码。
+    // 内核里的 keySweep 与这里的 keySweep 都原样留着，需要恢复时把这段解开即可。
+    // if (typeof setInterval === 'function') {
+    //     setInterval(keySweep, 60000);
+    // }
 
     // 暴露给外部调用（也便于自动化测试）
     window.TongueApp = {
